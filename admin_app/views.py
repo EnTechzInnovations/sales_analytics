@@ -80,10 +80,26 @@ def admin_home(request):
 
 
 
-def admin_view_onwer(request):
+def admin_view_owner(request):
     data=owner.objects.all()
     return render(request,'admin_view_owner.html',{'data':data})
 
 
+def  admin_accept_owner(request,id):
+    x=login.objects.get(login_id=id)
+    x.user_type='owner'
+    x.save()
+    return HttpResponse("<script>alert('Accept Successfully');window.location='/admin_home';</script>")
+    
 
 
+def admin_reject_owner(request,id):
+    x=login.objects.get(login_id=id)
+    x.user_type='reject'
+    x.save()
+    return HttpResponse("<script>alert('Reject Successfully');window.location='/admin_home';</script>")
+
+
+def admin_view_staff(request):
+    data=staff.objects.all()
+    return render(request,'admin_view_staff.html',{'data':data})

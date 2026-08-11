@@ -8,7 +8,9 @@ urlpatterns = [
     path('owner_register',views.owner_register,name='owner_register'),
 
     path('admin_home',views.admin_home,name='admin_home'),
-    path('admin_view_onwer',views.admin_view_onwer,name='admin_view_onwer'),
+    path('admin_view_owner',views.admin_view_owner,name='admin_view_owner'),
+    path('admin_accept_owner/<id>',views.admin_accept_owner,name='admin_accept_owner'),
+    path('admin_reject_owner/<id>',views.admin_reject_owner,name='admin_reject_owner'),
 
 
    

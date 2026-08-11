@@ -274,6 +274,11 @@
             flex:1;
         }
 
+        .content-inner{
+            max-width:1400px;
+            margin:0 auto;
+        }
+
         .content-head{
             margin-bottom:22px;
         }
@@ -441,6 +446,51 @@
 
         .pin{ font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:var(--ink-soft); }
 
+        /* ===== accept / reject actions ===== */
+        .action-links{
+            display:flex;
+            gap:8px;
+            white-space:nowrap;
+        }
+
+        .action-btn{
+            display:inline-flex;
+            align-items:center;
+            gap:5px;
+            font-family:'IBM Plex Mono', monospace;
+            font-size:11px;
+            letter-spacing:0.04em;
+            text-decoration:none;
+            padding:6px 11px;
+            border-radius:2px;
+            border:1px solid transparent;
+            transition:background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+        }
+
+        .action-btn:active{ transform:translateY(1px); }
+
+        .action-accept{
+            background:rgba(47,125,92,0.12);
+            border-color:rgba(47,125,92,0.35);
+            color:var(--green-dark);
+        }
+        .action-accept:hover{
+            background:var(--green);
+            color:#fff;
+            box-shadow:0 4px 12px -4px rgba(47,125,92,0.5);
+        }
+
+        .action-reject{
+            background:rgba(162,68,68,0.1);
+            border-color:rgba(162,68,68,0.32);
+            color:var(--red);
+        }
+        .action-reject:hover{
+            background:var(--red);
+            color:#fff;
+            box-shadow:0 4px 12px -4px rgba(162,68,68,0.5);
+        }
+
         .empty-state{
             padding:60px 30px;
             text-align:center;
@@ -477,8 +527,21 @@
             z-index:45;
         }
 
+        /* smaller laptops (1024-1240px): sidebar + 4 stat cards get tight, drop to 2x2 */
+        @media (max-width:1240px) and (min-width:901px){
+            .stats-grid{ grid-template-columns:1fr 1fr; }
+            .content{ padding:26px 24px 50px; }
+        }
+
+        /* narrow the sidebar slightly on compact laptop screens instead of collapsing */
+        @media (max-width:1080px) and (min-width:901px){
+            .sidebar{ width:200px; }
+            .main{ margin-left:200px; }
+            .search-box input{ width:170px; }
+        }
+
         @media (max-width:900px){
-            .sidebar{ transform:translateX(-100%); }
+            .sidebar{ transform:translateX(-100%); width:230px; }
             .sidebar.open{ transform:translateX(0); }
             .main{ margin-left:0; }
             .hamburger{ display:flex; }
@@ -492,6 +555,12 @@
             .content{ padding:22px 16px 50px; }
             .topbar{ padding:14px 16px; }
             .search-box{ display:none; }
+        }
+
+        /* very large / ultrawide monitors: keep line lengths and card widths sane */
+        @media (min-width:1700px){
+            .content-inner{ max-width:1560px; }
+            .stats-grid{ gap:20px; }
         }
     </style>
 </head>
@@ -557,6 +626,7 @@
             </div>
 
             <div class="content">
+              <div class="content-inner">
 
                 <div class="content-head">
                     <h1>Registered Shops</h1>
@@ -604,6 +674,7 @@
                                     <th>State</th>
                                     <th>Pincode</th>
                                     <th>License</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -620,6 +691,12 @@
                                     <td>{{i.state}}</td>
                                     <td class="pin">{{i.pincode}}</td>
                                     <td><img class="thumb" src="/static/own_reg_img/{{i.License}}" alt="{{i.shop_name}} license" onclick="openLightbox(this.src)"></td>
+                                    <td>
+                                        <div class="action-links">
+                                            <a class="action-btn action-accept" href="/admin_accept_owner/{{i.login_id}}" onclick="return confirm('Accept {{i.shop_name}}? This will approve the shop.');">✓ Accept</a>
+                                            <a class="action-btn action-reject" href="/admin_reject_owner/{{i.login_id}}" onclick="return confirm('Reject {{i.shop_name}}? This cannot be undone.');">✕ Reject</a>
+                                        </div>
+                                    </td>
                                 </tr>
                                 {%endfor%}
                             </tbody>
@@ -634,6 +711,7 @@
                     {%endif%}
                 </div>
 
+              </div>
             </div>
         </div>
     </div>
