@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sales Analytics — Terminal Access</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=VT323&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-0:#17181c;
+    --bg-1:#1f2126;
+    --receipt:#faf8f2;
+    --receipt-shade:#eeeae0;
+    --green:#2f7d5c;
+    --green-dark:#255f47;
+    --amber:#e8a93b;
+    --amber-soft:rgba(232,169,59,0.16);
+    --ink:#232323;
+    --ink-soft:#7a786f;
+    --ink-faint:#b3b0a3;
+  }
+
+  *{ box-sizing:border-box; }
+
+  html,body{ margin:0; padding:0; height:100%; }
+
+  body{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 20px;
+    font-family:'Space Grotesk', sans-serif;
+    color:var(--receipt);
+    background:
+      radial-gradient(ellipse 60% 40% at 50% 0%, var(--amber-soft), transparent 65%),
+      linear-gradient(180deg, var(--bg-1), var(--bg-0) 55%);
+    position:relative;
+    overflow:hidden;
+  }
+
+  /* subtle scanline texture, like an old terminal screen */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,0.015),
+      rgba(255,255,255,0.015) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+    pointer-events:none;
+  }
+
+  .stage{
+    width:100%;
+    max-width:400px;
+    position:relative;
+    z-index:1;
+  }
+
+  /* ===== register display header ===== */
+  .display{
+    text-align:center;
+    margin-bottom:26px;
+  }
+
+  .display .brand{
+    font-family:'VT323', monospace;
+    font-size:46px;
+    line-height:1;
+    letter-spacing:0.04em;
+    color:var(--amber);
+    text-shadow:
+      0 0 6px rgba(232,169,59,0.65),
+      0 0 22px rgba(232,169,59,0.35);
+  }
+
+  .display .sub{
+    display:block;
+    margin-top:10px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+  }
+
+  /* ===== receipt card ===== */
+  .receipt{
+    background:linear-gradient(180deg, var(--receipt), var(--receipt-shade));
+    color:var(--ink);
+    padding:30px 28px 26px;
+    position:relative;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.6);
+    clip-path: polygon(
+      0% 0%, 100% 0%, 100% 96%,
+      96% 100%, 92% 96%, 88% 100%, 84% 96%, 80% 100%,
+      76% 96%, 72% 100%, 68% 96%, 64% 100%, 60% 96%,
+      56% 100%, 52% 96%, 48% 100%, 44% 96%, 40% 100%,
+      36% 96%, 32% 100%, 28% 96%, 24% 100%, 20% 96%,
+      16% 100%, 12% 96%, 8% 100%, 4% 96%, 0% 100%
+    );
+    padding-bottom:44px;
+  }
+
+  .receipt-head{
+    text-align:center;
+    border-bottom:1px dashed rgba(35,35,35,0.28);
+    padding-bottom:14px;
+    margin-bottom:20px;
+    font-family:'IBM Plex Mono', monospace;
+  }
+
+  .receipt-head .title{
+    font-size:12px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--ink);
+    font-weight:500;
+  }
+
+  .receipt-head .meta{
+    margin-top:6px;
+    font-size:10.5px;
+    color:var(--ink-soft);
+    letter-spacing:0.04em;
+  }
+
+  /* ===== role selector: register keys ===== */
+  .role-select{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:22px;
+  }
+
+  .role-select input{
+    position:absolute;
+    opacity:0;
+    pointer-events:none;
+  }
+
+  .role-select label{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:2px;
+    padding:12px 8px 10px;
+    border:1px solid rgba(35,35,35,0.18);
+    border-radius:3px;
+    background:rgba(255,255,255,0.35);
+    cursor:pointer;
+    transition:all 0.15s ease;
+    box-shadow:0 1px 0 rgba(255,255,255,0.5) inset, 0 2px 0 rgba(35,35,35,0.06);
+  }
+
+  .role-select label .key-label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    font-weight:500;
+  }
+
+  .role-select label .key-hint{
+    font-size:9.5px;
+    color:var(--ink-soft);
+    letter-spacing:0.03em;
+  }
+
+  .role-select input:checked + label{
+    transform:translateY(1px);
+    box-shadow:0 1px 0 rgba(35,35,35,0.15) inset;
+  }
+
+  .role-select input#role-staff:checked + label{
+    background:var(--green);
+    border-color:var(--green-dark);
+    color:#fff;
+  }
+  .role-select input#role-staff:checked + label .key-hint{ color:rgba(255,255,255,0.75); }
+
+  .role-select input#role-owner:checked + label{
+    background:var(--amber);
+    border-color:#c68f2c;
+    color:#2b1e05;
+  }
+  .role-select input#role-owner:checked + label .key-hint{ color:rgba(43,30,5,0.65); }
+
+  .role-select label:focus-within{
+    outline:2px solid var(--ink);
+    outline-offset:2px;
+  }
+
+  /* ===== fields ===== */
+  form{ display:flex; flex-direction:column; gap:18px; }
+
+  .field label{
+    display:block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:7px;
+  }
+
+  .field input[type="text"],
+  .field input[type="password"]{
+    width:100%;
+    background:rgba(255,255,255,0.55);
+    border:1px solid rgba(35,35,35,0.2);
+    border-radius:2px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:14.5px;
+    color:var(--ink);
+    padding:11px 12px;
+    outline:none;
+    transition:border-color 0.2s ease, background 0.2s ease;
+  }
+
+  .field input::placeholder{
+    color:rgba(35,35,35,0.32);
+  }
+
+  .field input:focus{
+    border-color:var(--green);
+    background:#fff;
+  }
+
+  button.submit{
+    margin-top:6px;
+    width:100%;
+    background:var(--green);
+    color:#fff;
+    border:none;
+    border-radius:2px;
+    padding:13px 18px;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    letter-spacing:0.04em;
+    cursor:pointer;
+    transition:background 0.2s ease, transform 0.15s ease;
+  }
+
+  button.submit:hover{ background:var(--green-dark); }
+  button.submit:active{ transform:translateY(1px); }
+  button.submit:focus-visible{ outline:2px solid var(--ink); outline-offset:3px; }
+
+  /* ===== decorative barcode ===== */
+  .barcode{
+    margin-top:20px;
+    height:34px;
+    background:repeating-linear-gradient(
+      90deg,
+      var(--ink) 0px, var(--ink) 2px,
+      transparent 2px, transparent 3px,
+      var(--ink) 3px, var(--ink) 4px,
+      transparent 4px, transparent 7px,
+      var(--ink) 7px, var(--ink) 8px,
+      transparent 8px, transparent 11px,
+      var(--ink) 11px, var(--ink) 14px,
+      transparent 14px, transparent 15px
+    );
+    opacity:0.75;
+  }
+
+  .barcode-num{
+    text-align:center;
+    margin-top:6px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10px;
+    letter-spacing:0.3em;
+    color:var(--ink-soft);
+  }
+
+  .back-link{
+    display:block;
+    text-align:center;
+    margin-top:26px;
+    color:var(--ink-faint);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    text-decoration:none;
+    letter-spacing:0.03em;
+    transition:color 0.2s ease;
+  }
+  .back-link:hover{ color:var(--amber); }
+  .back-link:focus-visible{ outline:2px solid var(--amber); outline-offset:3px; }
+
+  @media (max-width:420px){
+    .receipt{ padding:26px 20px 20px; padding-bottom:40px; }
+    .display .brand{ font-size:38px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="stage">
+
+    <div class="display">
+      <span class="brand">SALES ANALYTICS</span>
+      <span class="sub">Terminal Access</span>
+    </div>
+
+    <div class="receipt">
+
+      <div class="receipt-head">
+        <div class="title">Sign In Required</div>
+        <div class="meta">Select your role to continue</div>
+      </div>
+
+      <form action="" method="post">
+
+        <fieldset class="role-select" style="border:none; padding:0; margin:0 0 22px;">
+          <legend style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0);">Select role</legend>
+
+          <input type="radio" id="role-staff" name="role" value="staff" checked>
+          <label for="role-staff">
+            <span class="key-label">Staff</span>
+            <span class="key-hint">daily sales</span>
+          </label>
+
+          <input type="radio" id="role-owner" name="role" value="owner">
+          <label for="role-owner">
+            <span class="key-label">Owner</span>
+            <span class="key-hint">full reports</span>
+          </label>
+        </fieldset>
+
+        <div class="field">
+          <label for="uname">Username</label>
+          <input type="text" id="uname" name="uname" placeholder="enter your name" autocomplete="username" required>
+        </div>
+
+        <div class="field">
+          <label for="pass">Password</label>
+          <input type="password" id="pass" name="pass" placeholder="••••••••" autocomplete="current-password" required>
+        </div>
+
+        <button type="submit" class="submit">Sign In</button>
+
+      </form>
+
+      <div class="barcode" aria-hidden="true"></div>
+      <div class="barcode-num">SA · 2026 · ACCESS</div>
+
+    </div>
+
+    <a href="/" class="back-link">← Back to home</a>
+
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Analytics — Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --bg-0:#17181c;
+            --bg-1:#1f2126;
+            --sidebar:#141519;
+            --receipt:#faf8f2;
+            --receipt-shade:#eeeae0;
+            --green:#2f7d5c;
+            --green-dark:#255f47;
+            --amber:#e8a93b;
+            --amber-soft:rgba(232,169,59,0.14);
+            --red:#a24444;
+            --teal:#3d7f8c;
+            --ink:#232323;
+            --ink-soft:#7a786f;
+            --ink-faint:#b3b0a3;
+            --line:rgba(35,35,35,0.14);
+            --row-alt:rgba(47,125,92,0.05);
+        }
+
+        *{ box-sizing:border-box; }
+        html,body{ margin:0; padding:0; }
+
+        body{
+            font-family:'Space Grotesk', sans-serif;
+            background:var(--bg-0);
+            color:var(--ink);
+            min-height:100vh;
+        }
+
+        /* ===================== LAYOUT ===================== */
+        .shell{
+            display:flex;
+            min-height:100vh;
+        }
+
+        /* ===================== SIDEBAR ===================== */
+        .sidebar{
+            width:230px;
+            flex-shrink:0;
+            background:var(--sidebar);
+            border-right:1px solid rgba(250,248,242,0.06);
+            display:flex;
+            flex-direction:column;
+            position:fixed;
+            top:0;
+            bottom:0;
+            left:0;
+            z-index:50;
+            transition:transform 0.25s ease;
+        }
+
+        .sidebar .brand{
+            padding:26px 22px 20px;
+            border-bottom:1px dashed rgba(250,248,242,0.1);
+        }
+
+        .sidebar .brand .mark{
+            font-family:'VT323', monospace;
+            font-size:26px;
+            color:var(--amber);
+            letter-spacing:0.03em;
+            text-shadow:0 0 10px rgba(232,169,59,0.4);
+            line-height:1;
+        }
+
+        .sidebar .brand .tag{
+            display:block;
+            margin-top:6px;
+            font-family:'IBM Plex Mono', monospace;
+            font-size:9.5px;
+            letter-spacing:0.22em;
+            text-transform:uppercase;
+            color:var(--ink-faint);
+        }
+
+        .sidebar{
+            overflow-y:auto;
+        }
+
+        .nav-group{
+            padding:22px 12px;
+            border-bottom:1px dashed rgba(250,248,242,0.06);
+        }
+
+        .nav-group:last-of-type{
+            border-bottom:none;
+        }
+
+        .nav-group .group-label{
+            font-family:'IBM Plex Mono', monospace;
+            font-size:9.5px;
+            letter-spacing:0.16em;
+            text-transform:uppercase;
+            color:var(--ink-faint);
+            padding:0 10px 12px;
+        }
+
+        .nav-item{
+            display:flex;
+            align-items:center;
+            gap:11px;
+            padding:12px 12px;
+            border-radius:3px;
+            color:rgba(250,248,242,0.68);
+            text-decoration:none;
+            font-size:13.5px;
+            font-weight:500;
+            margin-bottom:6px;
+            transition:background 0.15s ease, color 0.15s ease;
+            border-left:2px solid transparent;
+        }
+
+        .nav-item:last-child{
+            margin-bottom:0;
+        }
+
+        .nav-item .glyph{
+            width:16px;
+            text-align:center;
+            font-family:'IBM Plex Mono', monospace;
+            font-size:13px;
+            color:var(--ink-faint);
+        }
+
+        .nav-item:hover{
+            background:rgba(250,248,242,0.05);
+            color:var(--receipt);
+        }
+
+        .nav-item.active{
+            background:rgba(47,125,92,0.18);
+            color:var(--receipt);
+            border-left-color:var(--green);
+        }
+
+        .nav-item.active .glyph{ color:var(--green); }
+
+        .sidebar-foot{
+            margin-top:auto;
+            padding:16px 22px 22px;
+            border-top:1px dashed rgba(250,248,242,0.1);
+        }
+
+        .logout-link{
+            display:flex;
+            align-items:center;
+            gap:9px;
+            font-family:'IBM Plex Mono', monospace;
+            font-size:11.5px;
+            letter-spacing:0.04em;
+            color:var(--red);
+            text-decoration:none;
+        }
+
+        .logout-link:hover{ color:#c66; }
+
+        /* ===================== MAIN ===================== */
+        .main{
+            flex:1;
+            margin-left:230px;
+            display:flex;
+            flex-direction:column;
+            min-height:100vh;
+        }
+
+        /* topbar */
+        .topbar{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:16px;
+            padding:16px 30px;
+            background:var(--bg-1);
+            border-bottom:1px solid rgba(250,248,242,0.06);
+            position:sticky;
+            top:0;
+            z-index:40;
+        }
+
+        .topbar-left{
+            display:flex;
+            align-items:center;
+            gap:14px;
+        }
+
+        .hamburger{
+            display:none;
+            flex-direction:column;
+            gap:4px;
+            background:none;
+            border:none;
+            cursor:pointer;
+            padding:6px;
+        }
+        .hamburger span{
+            width:20px; height:2px; background:var(--receipt); display:block;
+        }
+
+        .breadcrumb{
+            font-family:'IBM Plex Mono', monospace;
+            font-size:11px;
+            letter-spacing:0.08em;
+            text-transform:uppercase;
+            color:var(--ink-faint);
+        }
+
+        .breadcrumb strong{ color:var(--amber); font-weight:500; }
+
+        .topbar-right{
+            display:flex;
+            align-items:center;
+            gap:18px;
+        }
+
+        .search-box{
+            position:relative;
+        }
+
+        .search-box input{
+            width:220px;
+            background:rgba(250,248,242,0.07);
+            border:1px solid rgba(250,248,242,0.14);
+            border-radius:2px;
+            color:var(--receipt);
+            font-family:'IBM Plex Mono', monospace;
+            font-size:12.5px;
+            padding:9px 12px 9px 32px;
+            outline:none;
+            transition:border-color 0.2s ease, background 0.2s ease;
+        }
+        .search-box input::placeholder{ color:rgba(250,248,242,0.35); }
+        .search-box input:focus{ border-color:var(--amber); background:rgba(250,248,242,0.1); }
+        .search-box::before{
+            content:"⌕";
+            position:absolute; left:11px; top:50%; transform:translateY(-50%);
+            color:var(--ink-faint); font-size:14px;
+        }
+
+        .profile-chip{
+            display:flex;
+            align-items:center;
+            gap:9px;
+            font-family:'IBM Plex Mono', monospace;
+            font-size:12px;
+            color:var(--receipt);
+        }
+
+        .avatar{
+            width:30px; height:30px;
+            border-radius:50%;
+            background:var(--green);
+            color:#fff;
+            display:flex; align-items:center; justify-content:center;
+            font-weight:600; font-size:12.5px;
+            font-family:'Space Grotesk', sans-serif;
+        }
+
+        /* content */
+        .content{
+            padding:28px 30px 60px;
+            background:
+                radial-gradient(ellipse 60% 25% at 50% 0%, var(--amber-soft), transparent 65%),
+                var(--bg-0);
+            flex:1;
+        }
+
+        .content-head{
+            margin-bottom:22px;
+        }
+
+        .content-head h1{
+            margin:0;
+            font-family:'VT323', monospace;
+            font-size:34px;
+            color:var(--receipt);
+            letter-spacing:0.02em;
+        }
+
+        .content-head .sub{
+            font-family:'IBM Plex Mono', monospace;
+            font-size:11.5px;
+            color:var(--ink-faint);
+            letter-spacing:0.04em;
+            margin-top:4px;
+        }
+
+        /* ===== stat cards ===== */
+        .stats-grid{
+            display:grid;
+            grid-template-columns:repeat(4, 1fr);
+            gap:16px;
+            margin-bottom:28px;
+        }
+
+        .stat-card{
+            background:linear-gradient(180deg, var(--receipt), var(--receipt-shade));
+            border-radius:3px;
+            padding:18px 20px;
+            border-left:3px solid var(--accent, var(--green));
+            box-shadow:0 18px 34px -18px rgba(0,0,0,0.55);
+        }
+
+        .stat-card .stat-label{
+            font-family:'IBM Plex Mono', monospace;
+            font-size:10px;
+            letter-spacing:0.12em;
+            text-transform:uppercase;
+            color:var(--ink-soft);
+            margin-bottom:10px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+        }
+
+        .stat-card .stat-value{
+            font-family:'Space Grotesk', sans-serif;
+            font-size:30px;
+            font-weight:700;
+            color:var(--ink);
+            line-height:1;
+        }
+
+        .stat-card .stat-tag{
+            font-family:'IBM Plex Mono', monospace;
+            font-size:9px;
+            padding:2px 6px;
+            border-radius:2px;
+            background:var(--accent, var(--green));
+            color:#fff;
+            letter-spacing:0.04em;
+        }
+
+        .stat-shops{ --accent:var(--green); }
+        .stat-staff{ --accent:var(--teal); }
+        .stat-owners{ --accent:var(--amber); }
+        .stat-pending{ --accent:var(--red); }
+
+        /* ===== ledger panel (table) ===== */
+        .panel-head{
+            display:flex;
+            flex-wrap:wrap;
+            gap:12px;
+            align-items:center;
+            justify-content:space-between;
+            margin-bottom:14px;
+        }
+
+        .panel-head .panel-title{
+            font-family:'IBM Plex Mono', monospace;
+            font-size:11px;
+            letter-spacing:0.14em;
+            text-transform:uppercase;
+            color:var(--receipt);
+        }
+
+        .hint{
+            font-family:'IBM Plex Mono', monospace;
+            font-size:10.5px;
+            color:var(--ink-faint);
+        }
+
+        .panel{
+            background:linear-gradient(180deg, var(--receipt), var(--receipt-shade));
+            border-radius:3px;
+            box-shadow:0 30px 60px -25px rgba(0,0,0,0.6);
+            overflow:hidden;
+        }
+
+        .table-scroll{ overflow-x:auto; }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            min-width:920px;
+        }
+
+        thead th{
+            position:sticky; top:0;
+            background:var(--ink);
+            color:var(--receipt);
+            font-family:'IBM Plex Mono', monospace;
+            font-size:10px;
+            letter-spacing:0.1em;
+            text-transform:uppercase;
+            text-align:left;
+            padding:13px 16px;
+            white-space:nowrap;
+            font-weight:500;
+            border-bottom:2px solid var(--green);
+        }
+
+        thead th:first-child{ padding-left:22px; }
+
+        tbody td{
+            padding:12px 16px;
+            font-size:13px;
+            border-bottom:1px solid var(--line);
+            vertical-align:middle;
+        }
+
+        tbody td:first-child{
+            padding-left:22px;
+            font-family:'IBM Plex Mono', monospace;
+            color:var(--ink-soft);
+            font-size:12px;
+        }
+
+        tbody tr:nth-child(even){ background:var(--row-alt); }
+        tbody tr:hover{ background:var(--amber-soft); }
+
+        .cell-shop{ font-weight:600; }
+        .cell-owner{ color:var(--ink-soft); }
+
+        td.email, td.address{
+            max-width:180px;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+        }
+
+        .thumb{
+            width:64px; height:44px;
+            object-fit:cover;
+            border-radius:2px;
+            border:1px solid var(--line);
+            cursor:zoom-in;
+            display:block;
+            transition:transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .thumb:hover{ transform:scale(1.06); box-shadow:0 4px 14px rgba(0,0,0,0.25); }
+
+        .pin{ font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:var(--ink-soft); }
+
+        .empty-state{
+            padding:60px 30px;
+            text-align:center;
+            font-family:'IBM Plex Mono', monospace;
+            color:var(--ink-soft);
+        }
+        .empty-state .glyph{ font-size:34px; color:var(--green); margin-bottom:10px; display:block; }
+        .empty-state p{ margin:6px 0 0; font-size:12.5px; letter-spacing:0.03em; }
+
+        /* ===== lightbox ===== */
+        .lightbox{
+            position:fixed; inset:0;
+            background:rgba(23,24,28,0.92);
+            display:none; align-items:center; justify-content:center;
+            z-index:100; padding:30px; cursor:zoom-out;
+        }
+        .lightbox.open{ display:flex; }
+        .lightbox img{
+            max-width:min(680px, 90vw); max-height:80vh;
+            border-radius:3px; box-shadow:0 30px 70px rgba(0,0,0,0.6);
+            border:1px solid rgba(250,248,242,0.12);
+        }
+        .lightbox .close-hint{
+            position:absolute; top:22px; right:26px;
+            font-family:'IBM Plex Mono', monospace; font-size:11px;
+            letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-faint);
+        }
+
+        /* ===== mobile ===== */
+        .sidebar-backdrop{
+            display:none;
+            position:fixed; inset:0;
+            background:rgba(0,0,0,0.5);
+            z-index:45;
+        }
+
+        @media (max-width:900px){
+            .sidebar{ transform:translateX(-100%); }
+            .sidebar.open{ transform:translateX(0); }
+            .main{ margin-left:0; }
+            .hamburger{ display:flex; }
+            .sidebar-backdrop.open{ display:block; }
+            .search-box input{ width:150px; }
+            .stats-grid{ grid-template-columns:1fr 1fr; }
+        }
+
+        @media (max-width:560px){
+            .stats-grid{ grid-template-columns:1fr; }
+            .content{ padding:22px 16px 50px; }
+            .topbar{ padding:14px 16px; }
+            .search-box{ display:none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="shell">
+
+        <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
+
+        <aside class="sidebar" id="sidebar">
+            <div class="brand">
+                <div class="mark">SALES ANALYTICS</div>
+                <span class="tag">Admin Console</span>
+            </div>
+
+            <nav class="nav-group">
+                <div class="group-label">Overview</div>
+                <a href="admin_home" class="nav-item"><span class="glyph">◧</span> Home</a>
+                <a href="#" class="nav-item active"><span class="glyph">▤</span> Shops</a>
+                <a href="#" class="nav-item"><span class="glyph">☺</span> Staff</a>
+                <a href="admin_view_onwer" class="nav-item"><span class="glyph">☗</span> View Owners</a>
+                <!-- add more Overview links here, same markup pattern -->
+            </nav>
+
+            <nav class="nav-group">
+                <div class="group-label">Insights</div>
+                <a href="#" class="nav-item"><span class="glyph">▦</span> Reports</a>
+                <a href="#" class="nav-item"><span class="glyph">✓</span> Approvals</a>
+                <!-- add more Insights links here -->
+            </nav>
+
+            <nav class="nav-group">
+                <div class="group-label">System</div>
+                <a href="#" class="nav-item"><span class="glyph">⚙</span> Settings</a>
+                <a href="#" class="nav-item"><span class="glyph">🔔</span> Notifications</a>
+                <!-- add more System links here -->
+            </nav>
+
+            <div class="sidebar-foot">
+                <a href="/" class="logout-link">⏻ Logout</a>
+            </div>
+        </aside>
+
+        <div class="main">
+
+            <div class="topbar">
+                <div class="topbar-left">
+                    <button class="hamburger" onclick="toggleSidebar()" aria-label="Toggle menu">
+                        <span></span><span></span><span></span>
+                    </button>
+                    <div class="breadcrumb">Admin / <strong>Shops</strong></div>
+                </div>
+
+                <div class="topbar-right">
+                    <div class="search-box">
+                        <input type="text" id="shopSearch" placeholder="Search shop, owner, district…" autocomplete="off">
+                    </div>
+                    <div class="profile-chip">
+                        <div class="avatar">A</div>
+                        <span>Admin</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content">
+
+                <div class="content-head">
+                    <h1>Registered Shops</h1>
+                    <div class="sub">All vendors currently on file</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card stat-shops">
+                        <div class="stat-label">Total Shops <span class="stat-tag">Shops</span></div>
+                        <div class="stat-value">{{data|length}}</div>
+                    </div>
+                    <div class="stat-card stat-staff">
+                        <div class="stat-label">Total Staff <span class="stat-tag">Staff</span></div>
+                        <div class="stat-value">{{staff_count|default:"0"}}</div>
+                    </div>
+                    <div class="stat-card stat-owners">
+                        <div class="stat-label">Total Owners <span class="stat-tag">Owners</span></div>
+                        <div class="stat-value">{{owner_count|default:"0"}}</div>
+                    </div>
+                    <div class="stat-card stat-pending">
+                        <div class="stat-label">Pending Approvals <span class="stat-tag">Pending</span></div>
+                        <div class="stat-value">{{pending_count|default:"0"}}</div>
+                    </div>
+                </div>
+
+                <div class="panel-head">
+                    <span class="panel-title">Vendor Ledger</span>
+                    <span class="hint">Click any photo or license to enlarge</span>
+                </div>
+
+                <div class="panel">
+                    {%if data%}
+                    <div class="table-scroll">
+                        <table id="shopTable">
+                            <thead>
+                                <tr>
+                                    <th>SL.No</th>
+                                    <th>Shop Name</th>
+                                    <th>Owner Name</th>
+                                    <th>Photo</th>
+                                    <th>Phone</th>
+                                    <th>Email</th>
+                                    <th>Address</th>
+                                    <th>District</th>
+                                    <th>State</th>
+                                    <th>Pincode</th>
+                                    <th>License</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {%for i in data%}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td class="cell-shop">{{i.shop_name}}</td>
+                                    <td class="cell-owner">{{i.owner_name}}</td>
+                                    <td><img class="thumb" src="/static/own_reg_img/{{i.photo}}" alt="{{i.shop_name}} photo" onclick="openLightbox(this.src)"></td>
+                                    <td>{{i.phone}}</td>
+                                    <td class="email">{{i.email}}</td>
+                                    <td class="address">{{i.address}}</td>
+                                    <td>{{i.district}}</td>
+                                    <td>{{i.state}}</td>
+                                    <td class="pin">{{i.pincode}}</td>
+                                    <td><img class="thumb" src="/static/own_reg_img/{{i.License}}" alt="{{i.shop_name}} license" onclick="openLightbox(this.src)"></td>
+                                </tr>
+                                {%endfor%}
+                            </tbody>
+                        </table>
+                    </div>
+                    {%else%}
+                    <div class="empty-state">
+                        <span class="glyph">◍</span>
+                        <div>No shops registered yet</div>
+                        <p>New vendor entries will appear here once submitted.</p>
+                    </div>
+                    {%endif%}
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
+        <span class="close-hint">Click anywhere to close</span>
+        <img id="lightboxImg" src="" alt="Enlarged view">
+    </div>
+
+    <script>
+        function openLightbox(src){
+            document.getElementById('lightboxImg').src = src;
+            document.getElementById('lightbox').classList.add('open');
+        }
+        function closeLightbox(){
+            document.getElementById('lightbox').classList.remove('open');
+        }
+
+        function toggleSidebar(){
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarBackdrop').classList.toggle('open');
+        }
+
+        var searchInput = document.getElementById('shopSearch');
+        if (searchInput) {
+            searchInput.addEventListener('input', function(){
+                var q = this.value.trim().toLowerCase();
+                var rows = document.querySelectorAll('#shopTable tbody tr');
+                rows.forEach(function(row){
+                    var text = row.innerText.toLowerCase();
+                    row.style.display = text.indexOf(q) !== -1 ? '' : 'none';
+                });
+            });
+        }
+    </script>
+
+</body>
+</html>
