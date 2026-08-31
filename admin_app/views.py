@@ -103,3 +103,25 @@ def admin_reject_owner(request,id):
 def admin_view_staff(request):
     data=staff.objects.all()
     return render(request,'admin_view_staff.html',{'data':data})
+
+
+def admin_manage_category(request):
+    x=product_category.objects.all()
+    if request.method=='POST':
+        category_name=request.POST['cat_name']
+        des=request.POST['desp']
+        x=product_category(category_name=category_name,description=des)
+        x.save()
+        return HttpResponse("<script>alert('Add Successfully');window.location='/admin_home';</script>")
+
+    return render(request,'admin_manage_category.html',{'x':x})
+
+
+
+def admin_delete_category(request):
+    return HttpResponse("<script>alert('Delete Successfully');window.location='/admin_home';</script>")
+
+
+def admin_update_category(request):
+    return HttpResponse("<script>alert('Update Successfully');window.location='/admin_home';</script>")
+
