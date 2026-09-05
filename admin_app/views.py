@@ -1,5 +1,5 @@
 from django.core.files.storage import FileSystemStorage
-from django.http import HttpResponse
+from django.http import HttpResponse, request
 from django.shortcuts import render
 
 from .models import *
@@ -21,15 +21,25 @@ def login_section(request):
 
         try:
             lg=login.objects.get(user_name=username,password=password)
+            request.session['login_id']=lg.pk
 
             if  lg.user_type=='admin':
                 return HttpResponse("<script>alert('login success');window.location='/admin_home';</script>")
+
+            if lg.user_type=='owner':
+                ow=owner.objects.get(login_id=  request.session['login_id'])
+                
+                if ow:
+                    request.session['owner_id']=ow.pk
+
+                return HttpResponse("<script>alert('login success');window.location='/owner_home';</script>")
             
         except:
             return HttpResponse("<script>alert('Invalid Username or Password');window.location='/login';</script>")
               
 
     return render(request,'login.html')
+
 
 
 
@@ -68,6 +78,7 @@ def owner_register(request):
 
 
     return render(request,'owner_registration.html')
+
 
 
 
@@ -118,10 +129,53 @@ def admin_manage_category(request):
 
 
 
-def admin_delete_category(request):
+def admin_delete_category(request,id):
+    x=product_category.objects.get(category_id=id)
+    x.delete()
     return HttpResponse("<script>alert('Delete Successfully');window.location='/admin_home';</script>")
 
 
-def admin_update_category(request):
-    return HttpResponse("<script>alert('Update Successfully');window.location='/admin_home';</script>")
+
+def admin_update_category(request,id):
+    data=product_category.objects.get(category_id=id)
+
+    if request.method=='POST':
+        category_name=request.POST['cat_name']
+        des=request.POST['desp']
+
+        data.category_name=category_name
+        data.description=des
+
+        data.save()
+
+
+        return HttpResponse("<script>alert('Update Successfully');window.location='/admin_home';</script>")
+           
+    return render(request,'admin_manage_category.html',{'data':data})
+
+
+
+
+def  admin_view_feedback(request):
+    data=feedback.objects.all()
+    return render(request,'admin_view_feedback.html',{'data':data})
+
+
+def admin_view_complaint(request):
+    data=complaint.objects.all()
+
+    return render(request,'admin_view_complaint.html',{'data':data})
+
+
+def admin_send_reply(request,id):
+    data=complaint.objects.get(complaint_id=id)
+
+    if request.method=='POST':
+        reply=request.POST['reply']
+        data.reply=reply
+        data.save()
+        return HttpResponse("<script>alert('Reply Send Successfully');window.location='/admin_home';</script>")
+
+    return render(request,'admin_send_reply.html')
+
 

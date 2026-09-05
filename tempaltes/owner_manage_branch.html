@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    {% include 'owner_header.html' %}
+
+
+    <form action="" method="post">
+        <table>
+            <tr>
+                <th>Branch Name</th>
+                <td><input type="text" name="branch_name" id="branch_name"></td>
+            </tr>
+
+            <tr>
+                <th>Location</th>
+                <td><input type="text" name="location" id="location"></td>
+            </tr>
+
+            <tr>
+                <th>Phone</th>
+                <td><input type="text" name="phone" id="phone"></td>
+            </tr>
+            
+            <tr>
+                <th>
+                    Manager Name
+                </th>
+                <td>
+                    <input type="text" name="manager_name" id="manager_name">
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <input type="submit" value="Add Branch">
+                </td>
+            </tr>
+
+        </table>
+    </form>
+
+    <table  border="1">
+        <tr>
+            <th>SL NO</th>
+            <th>BRANCH NAME</th>
+            <th>LOCATION</th>
+            <th>PHONE</th>
+            <th>MANAGER NAME</th>
+        </tr>
+
+        {%for i in data%}
+        <tr>
+
+            <td>{{forloop.counter}}</td>
+            <td>{{i.branch_name}}</td>
+            <td>{{i.location}}</td>
+            <td>{{i.phone}}</td>
+            <td>{{i.manager_name}}</td>
+
+            <td><a href="/owner_update_branch/{{i.branch_id}}">Update</a></td>
+            <td><a href="/owner_delete_branch/{{i.branch_id}}">Delete</a></td>
+            
+        </tr>
+
+        {%endfor%}
+
+    </table>
+
+    
+</body>
+</html>

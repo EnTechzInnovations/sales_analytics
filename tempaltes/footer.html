@@ -1,13 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
+<style>
+    .sa-footer{
+        --sa-bg-1:#1f2126;
+        --sa-receipt:#faf8f2;
+        --sa-green:#2f7d5c;
+        --sa-amber:#e8a93b;
+        --sa-ink-faint:#b3b0a3;
 
-    <h1>Footer</h1>
-    
-</body>
-</html>
+        font-family:'IBM Plex Mono', 'Courier New', monospace;
+        background:var(--sa-bg-1);
+        border-top:1px solid rgba(250,248,242,0.08);
+        padding:22px 30px;
+        display:flex;
+        flex-wrap:wrap;
+        gap:14px;
+        align-items:center;
+        justify-content:space-between;
+        color:var(--sa-ink-faint);
+        font-size:11px;
+        letter-spacing:0.03em;
+    }
+
+    .sa-footer .sa-footer-brand{
+        display:flex;
+        align-items:center;
+        gap:10px;
+    }
+
+    .sa-footer .sa-footer-mark{
+        font-family:'VT323', monospace;
+        font-size:17px;
+        color:var(--sa-amber);
+        letter-spacing:0.03em;
+        line-height:1;
+    }
+
+    .sa-footer .sa-footer-links{
+        display:flex;
+        gap:18px;
+        flex-wrap:wrap;
+    }
+
+    .sa-footer a{
+        color:var(--sa-ink-faint);
+        text-decoration:none;
+        transition:color 0.15s ease;
+    }
+
+    .sa-footer a:hover{
+        color:var(--sa-amber);
+    }
+
+    .sa-footer .sa-footer-copy{
+        color:var(--sa-ink-faint);
+        opacity:0.85;
+    }
+
+    @media (max-width:560px){
+        .sa-footer{
+            flex-direction:column;
+            align-items:flex-start;
+            padding:18px 20px;
+        }
+    }
+</style>
+
+<footer class="sa-footer">
+    <div class="sa-footer-brand">
+        <span class="sa-footer-mark">SALES ANALYTICS</span>
+        <span class="sa-footer-copy">© 2026</span>
+    </div>
+
+    <nav class="sa-footer-links">
+        <a href="/">Home</a>
+        <a href="/login">Login</a>
+        <a href="/owner_register">Owner Registration</a>
+    </nav>
+</footer>

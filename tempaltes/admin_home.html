@@ -3,15 +3,548 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Sales Analytics — Admin Home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --bg-0:#17181c;
+            --bg-1:#1f2126;
+            --sidebar:#141519;
+            --receipt:#faf8f2;
+            --receipt-shade:#eeeae0;
+            --green:#2f7d5c;
+            --green-dark:#255f47;
+            --amber:#e8a93b;
+            --amber-soft:rgba(232,169,59,0.14);
+            --red:#a24444;
+            --teal:#3d7f8c;
+            --ink:#232323;
+            --ink-soft:#7a786f;
+            --ink-faint:#b3b0a3;
+            --line:rgba(35,35,35,0.14);
+        }
+
+        *{ box-sizing:border-box; }
+        html,body{ margin:0; padding:0; }
+
+        body{
+            font-family:'Space Grotesk', sans-serif;
+            background:var(--bg-0);
+            color:var(--ink);
+            min-height:100vh;
+        }
+
+        /* ===================== LAYOUT ===================== */
+        .shell{ display:flex; min-height:100vh; }
+
+        /* ===================== SIDEBAR ===================== */
+        .sidebar{
+            width:230px;
+            flex-shrink:0;
+            background:var(--sidebar);
+            border-right:1px solid rgba(250,248,242,0.06);
+            display:flex;
+            flex-direction:column;
+            position:fixed;
+            top:0; bottom:0; left:0;
+            z-index:50;
+            overflow-y:auto;
+            transition:transform 0.25s ease;
+        }
+
+        .sidebar .brand{
+            padding:26px 22px 20px;
+            border-bottom:1px dashed rgba(250,248,242,0.1);
+        }
+
+        .sidebar .brand .mark{
+            font-family:'VT323', monospace;
+            font-size:26px;
+            color:var(--amber);
+            letter-spacing:0.03em;
+            text-shadow:0 0 10px rgba(232,169,59,0.4);
+            line-height:1;
+        }
+
+        .sidebar .brand .tag{
+            display:block;
+            margin-top:6px;
+            font-family:'IBM Plex Mono', monospace;
+            font-size:9.5px;
+            letter-spacing:0.22em;
+            text-transform:uppercase;
+            color:var(--ink-faint);
+        }
+
+        .nav-group{
+            padding:22px 12px;
+            border-bottom:1px dashed rgba(250,248,242,0.06);
+        }
+        .nav-group:last-of-type{ border-bottom:none; }
+
+        .nav-group .group-label{
+            font-family:'IBM Plex Mono', monospace;
+            font-size:9.5px;
+            letter-spacing:0.16em;
+            text-transform:uppercase;
+            color:var(--ink-faint);
+            padding:0 10px 12px;
+        }
+
+        .nav-item{
+            display:flex;
+            align-items:center;
+            gap:11px;
+            padding:12px 12px;
+            border-radius:3px;
+            color:rgba(250,248,242,0.68);
+            text-decoration:none;
+            font-size:13.5px;
+            font-weight:500;
+            margin-bottom:6px;
+            transition:background 0.15s ease, color 0.15s ease;
+            border-left:2px solid transparent;
+        }
+        .nav-item:last-child{ margin-bottom:0; }
+
+        .nav-item .glyph{
+            width:16px;
+            text-align:center;
+            font-family:'IBM Plex Mono', monospace;
+            font-size:13px;
+            color:var(--ink-faint);
+        }
+
+        .nav-item:hover{
+            background:rgba(250,248,242,0.05);
+            color:var(--receipt);
+        }
+
+        .nav-item.active{
+            background:rgba(47,125,92,0.18);
+            color:var(--receipt);
+            border-left-color:var(--green);
+        }
+        .nav-item.active .glyph{ color:var(--green); }
+
+        .sidebar-foot{
+            margin-top:auto;
+            padding:16px 22px 22px;
+            border-top:1px dashed rgba(250,248,242,0.1);
+        }
+
+        .logout-link{
+            display:flex;
+            align-items:center;
+            gap:9px;
+            font-family:'IBM Plex Mono', monospace;
+            font-size:11.5px;
+            letter-spacing:0.04em;
+            color:var(--red);
+            text-decoration:none;
+        }
+        .logout-link:hover{ color:#c66; }
+
+        /* ===================== MAIN ===================== */
+        .main{
+            flex:1;
+            margin-left:230px;
+            display:flex;
+            flex-direction:column;
+            min-height:100vh;
+        }
+
+        .topbar{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:16px;
+            padding:16px 30px;
+            background:var(--bg-1);
+            border-bottom:1px solid rgba(250,248,242,0.06);
+            position:sticky;
+            top:0;
+            z-index:40;
+        }
+
+        .topbar-left{ display:flex; align-items:center; gap:14px; }
+
+        .hamburger{
+            display:none;
+            flex-direction:column;
+            gap:4px;
+            background:none;
+            border:none;
+            cursor:pointer;
+            padding:6px;
+        }
+        .hamburger span{ width:20px; height:2px; background:var(--receipt); display:block; }
+
+        .breadcrumb{
+            font-family:'IBM Plex Mono', monospace;
+            font-size:11px;
+            letter-spacing:0.08em;
+            text-transform:uppercase;
+            color:var(--ink-faint);
+        }
+        .breadcrumb strong{ color:var(--amber); font-weight:500; }
+
+        .profile-chip{
+            display:flex;
+            align-items:center;
+            gap:9px;
+            font-family:'IBM Plex Mono', monospace;
+            font-size:12px;
+            color:var(--receipt);
+        }
+
+        .avatar{
+            width:30px; height:30px;
+            border-radius:50%;
+            background:var(--green);
+            color:#fff;
+            display:flex; align-items:center; justify-content:center;
+            font-weight:600; font-size:12.5px;
+            font-family:'Space Grotesk', sans-serif;
+        }
+
+        /* content */
+        .content{
+            padding:28px 30px 60px;
+            background:
+                radial-gradient(ellipse 60% 25% at 50% 0%, var(--amber-soft), transparent 65%),
+                var(--bg-0);
+            flex:1;
+        }
+
+        .content-inner{ max-width:1400px; margin:0 auto; }
+
+        .content-head{ margin-bottom:26px; }
+
+        .content-head .eyebrow{
+            display:block;
+            font-family:'IBM Plex Mono', monospace;
+            font-size:10.5px;
+            letter-spacing:0.24em;
+            text-transform:uppercase;
+            color:var(--amber);
+            margin-bottom:8px;
+        }
+
+        .content-head h1{
+            margin:0;
+            font-family:'VT323', monospace;
+            font-size:36px;
+            color:var(--receipt);
+            letter-spacing:0.02em;
+        }
+
+        .content-head .sub{
+            font-family:'IBM Plex Mono', monospace;
+            font-size:11.5px;
+            color:var(--ink-faint);
+            letter-spacing:0.04em;
+            margin-top:6px;
+        }
+
+        /* ===== stat cards ===== */
+        .stats-grid{
+            display:grid;
+            grid-template-columns:repeat(4, 1fr);
+            gap:16px;
+            margin-bottom:32px;
+        }
+
+        .stat-card{
+            background:linear-gradient(180deg, var(--receipt), var(--receipt-shade));
+            border-radius:3px;
+            padding:18px 20px;
+            border-left:3px solid var(--accent, var(--green));
+            box-shadow:0 18px 34px -18px rgba(0,0,0,0.55);
+        }
+
+        .stat-card .stat-label{
+            font-family:'IBM Plex Mono', monospace;
+            font-size:10px;
+            letter-spacing:0.12em;
+            text-transform:uppercase;
+            color:var(--ink-soft);
+            margin-bottom:10px;
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+        }
+
+        .stat-card .stat-value{
+            font-family:'Space Grotesk', sans-serif;
+            font-size:30px;
+            font-weight:700;
+            color:var(--ink);
+            line-height:1;
+        }
+
+        .stat-card .stat-tag{
+            font-family:'IBM Plex Mono', monospace;
+            font-size:9px;
+            padding:2px 6px;
+            border-radius:2px;
+            background:var(--accent, var(--green));
+            color:#fff;
+            letter-spacing:0.04em;
+        }
+
+        .stat-owners{ --accent:var(--green); }
+        .stat-staff{ --accent:var(--teal); }
+        .stat-feedback{ --accent:var(--amber); }
+        .stat-complaints{ --accent:var(--red); }
+
+        /* ===== quick access tiles ===== */
+        .section-title{
+            font-family:'IBM Plex Mono', monospace;
+            font-size:11px;
+            letter-spacing:0.14em;
+            text-transform:uppercase;
+            color:var(--receipt);
+            margin-bottom:14px;
+        }
+
+        .tiles-grid{
+            display:grid;
+            grid-template-columns:repeat(3, 1fr);
+            gap:16px;
+        }
+
+        .tile{
+            display:flex;
+            flex-direction:column;
+            gap:10px;
+            background:linear-gradient(180deg, var(--receipt), var(--receipt-shade));
+            border-radius:3px;
+            padding:22px 22px 20px;
+            text-decoration:none;
+            color:var(--ink);
+            box-shadow:0 18px 34px -18px rgba(0,0,0,0.55);
+            border-top:3px solid var(--accent, var(--green));
+            transition:transform 0.15s ease, box-shadow 0.15s ease;
+            position:relative;
+            overflow:hidden;
+        }
+
+        .tile:hover{
+            transform:translateY(-3px);
+            box-shadow:0 22px 40px -16px rgba(0,0,0,0.6);
+        }
+
+        .tile .tile-glyph{
+            font-family:'IBM Plex Mono', monospace;
+            font-size:22px;
+            color:var(--accent, var(--green));
+        }
+
+        .tile .tile-title{
+            font-family:'Space Grotesk', sans-serif;
+            font-weight:600;
+            font-size:15.5px;
+        }
+
+        .tile .tile-desc{
+            font-family:'IBM Plex Mono', monospace;
+            font-size:11px;
+            color:var(--ink-soft);
+            line-height:1.5;
+        }
+
+        .tile .tile-go{
+            margin-top:auto;
+            padding-top:8px;
+            font-family:'IBM Plex Mono', monospace;
+            font-size:10.5px;
+            letter-spacing:0.08em;
+            text-transform:uppercase;
+            color:var(--accent, var(--green));
+        }
+
+        .tile-owners{ --accent:var(--green); }
+        .tile-staff{ --accent:var(--teal); }
+        .tile-category{ --accent:var(--amber); }
+        .tile-feedback{ --accent:#7c6fa8; }
+        .tile-complaint{ --accent:var(--red); }
+
+        /* ===== mobile ===== */
+        .sidebar-backdrop{
+            display:none;
+            position:fixed; inset:0;
+            background:rgba(0,0,0,0.5);
+            z-index:45;
+        }
+
+        @media (max-width:1240px) and (min-width:901px){
+            .stats-grid{ grid-template-columns:1fr 1fr; }
+            .tiles-grid{ grid-template-columns:1fr 1fr; }
+            .content{ padding:26px 24px 50px; }
+        }
+
+        @media (max-width:1080px) and (min-width:901px){
+            .sidebar{ width:200px; }
+            .main{ margin-left:200px; }
+        }
+
+        @media (max-width:900px){
+            .sidebar{ transform:translateX(-100%); width:230px; }
+            .sidebar.open{ transform:translateX(0); }
+            .main{ margin-left:0; }
+            .hamburger{ display:flex; }
+            .sidebar-backdrop.open{ display:block; }
+            .stats-grid{ grid-template-columns:1fr 1fr; }
+            .tiles-grid{ grid-template-columns:1fr 1fr; }
+        }
+
+        @media (max-width:560px){
+            .stats-grid{ grid-template-columns:1fr; }
+            .tiles-grid{ grid-template-columns:1fr; }
+            .content{ padding:22px 16px 50px; }
+            .topbar{ padding:14px 16px; }
+        }
+
+        @media (min-width:1700px){
+            .content-inner{ max-width:1560px; }
+        }
+    </style>
 </head>
 <body>
 
-    {%include 'admin_header.html'%}
-    {%include 'footer.html'%}
+    <div class="shell">
 
+        <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar()"></div>
 
-   
-    
+        <aside class="sidebar" id="sidebar">
+            <div class="brand">
+                <div class="mark">SALES ANALYTICS</div>
+                <span class="tag">Admin Console</span>
+            </div>
+
+            <nav class="nav-group">
+                <div class="group-label">Overview</div>
+                <a href="/admin_home" class="nav-item active"><span class="glyph">◧</span> Home</a>
+                <a href="/admin_view_owner" class="nav-item"><span class="glyph">☗</span> View Owners</a>
+                <a href="/admin_view_staff" class="nav-item"><span class="glyph">☺</span> View Staff</a>
+                <!-- add more Overview links here, same markup pattern -->
+            </nav>
+
+            <nav class="nav-group">
+                <div class="group-label">Catalog</div>
+                <a href="/admin_manage_category" class="nav-item"><span class="glyph">▦</span> Manage Categories</a>
+                <!-- add more Catalog links here -->
+            </nav>
+
+            <nav class="nav-group">
+                <div class="group-label">Support</div>
+                <a href="/admin_view_feedback" class="nav-item"><span class="glyph">✎</span> View Feedback</a>
+                <a href="/admin_view_complaint" class="nav-item"><span class="glyph">⚑</span> View Complaints</a>
+                <!-- add more Support links here -->
+            </nav>
+
+            <div class="sidebar-foot">
+                <a href="/" class="logout-link">⏻ Logout</a>
+            </div>
+        </aside>
+
+        <div class="main">
+
+            <div class="topbar">
+                <div class="topbar-left">
+                    <button class="hamburger" onclick="toggleSidebar()" aria-label="Toggle menu">
+                        <span></span><span></span><span></span>
+                    </button>
+                    <div class="breadcrumb">Admin / <strong>Home</strong></div>
+                </div>
+
+                <div class="profile-chip">
+                    <div class="avatar">A</div>
+                    <span>Admin</span>
+                </div>
+            </div>
+
+            <div class="content">
+              <div class="content-inner">
+
+                <div class="content-head">
+                    <span class="eyebrow">Welcome back</span>
+                    <h1>Admin Home</h1>
+                    <div class="sub">Here's what's happening across your shops today</div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card stat-owners">
+                        <div class="stat-label">Total Owners <span class="stat-tag">Owners</span></div>
+                        <div class="stat-value">{{owner_count|default:"0"}}</div>
+                    </div>
+                    <div class="stat-card stat-staff">
+                        <div class="stat-label">Total Staff <span class="stat-tag">Staff</span></div>
+                        <div class="stat-value">{{staff_count|default:"0"}}</div>
+                    </div>
+                    <div class="stat-card stat-feedback">
+                        <div class="stat-label">New Feedback <span class="stat-tag">Feedback</span></div>
+                        <div class="stat-value">{{feedback_count|default:"0"}}</div>
+                    </div>
+                    <div class="stat-card stat-complaints">
+                        <div class="stat-label">Open Complaints <span class="stat-tag">Complaints</span></div>
+                        <div class="stat-value">{{complaint_count|default:"0"}}</div>
+                    </div>
+                </div>
+
+                <div class="section-title">Quick Access</div>
+
+                <div class="tiles-grid">
+                    <a href="/admin_view_owner" class="tile tile-owners">
+                        <span class="tile-glyph">☗</span>
+                        <span class="tile-title">View Owners</span>
+                        <span class="tile-desc">Review registered shop owners, approve or reject pending accounts.</span>
+                        <span class="tile-go">Open →</span>
+                    </a>
+
+                    <a href="/admin_view_staff" class="tile tile-staff">
+                        <span class="tile-glyph">☺</span>
+                        <span class="tile-title">View Staff</span>
+                        <span class="tile-desc">See staff accounts linked to each shop and their activity.</span>
+                        <span class="tile-go">Open →</span>
+                    </a>
+
+                    <a href="/admin_manage_category" class="tile tile-category">
+                        <span class="tile-glyph">▦</span>
+                        <span class="tile-title">Manage Categories</span>
+                        <span class="tile-desc">Add, edit, or remove product and sales categories.</span>
+                        <span class="tile-go">Open →</span>
+                    </a>
+
+                    <a href="/admin_view_feedback" class="tile tile-feedback">
+                        <span class="tile-glyph">✎</span>
+                        <span class="tile-title">View Feedback</span>
+                        <span class="tile-desc">Read feedback submitted by shop owners and staff.</span>
+                        <span class="tile-go">Open →</span>
+                    </a>
+
+                    <a href="/admin_view_complaint" class="tile tile-complaint">
+                        <span class="tile-glyph">⚑</span>
+                        <span class="tile-title">View Complaints</span>
+                        <span class="tile-desc">Track and resolve complaints raised across the platform.</span>
+                        <span class="tile-go">Open →</span>
+                    </a>
+                </div>
+
+              </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar(){
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarBackdrop').classList.toggle('open');
+        }
+    </script>
+
 </body>
 </html>

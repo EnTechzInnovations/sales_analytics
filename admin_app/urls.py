@@ -13,6 +13,12 @@ urlpatterns = [
     path('admin_reject_owner/<id>',views.admin_reject_owner,name='admin_reject_owner'),
     path('admin_view_staff',views.admin_view_staff,name='admin_view_staff'),
     path('admin_manage_category',views.admin_manage_category,name='admin_manage_category'),
+    path('admin_delete_category/<id>',views.admin_delete_category,name='admin_delete_category'),
+    path('admin_update_category/<id>',views.admin_update_category,name='admin_update_category'),
+    path('admin_view_feedback',views.admin_view_feedback,name='admin_view_feedback'),
+    path('admin_view_complaint',views.admin_view_complaint,name='admin_view_complaint'),
+    path('admin_send_reply/<id>',views.admin_send_reply,name='admin_send_reply'),
+
     
 
 

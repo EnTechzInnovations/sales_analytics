@@ -3,14 +3,557 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Sales Analytics — Track Sales. Manage Staff. Grow Your Shop.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --bg-0:#17181c;
+            --bg-1:#1f2126;
+            --receipt:#faf8f2;
+            --receipt-shade:#eeeae0;
+            --green:#2f7d5c;
+            --green-dark:#255f47;
+            --amber:#e8a93b;
+            --amber-soft:rgba(232,169,59,0.16);
+            --teal:#3d7f8c;
+            --violet:#7c6fa8;
+            --ink:#232323;
+            --ink-soft:#7a786f;
+            --ink-faint:#b3b0a3;
+            --line:rgba(35,35,35,0.14);
+        }
+
+        *{ box-sizing:border-box; }
+        html,body{ margin:0; padding:0; }
+
+        body{
+            font-family:'Space Grotesk', sans-serif;
+            background:var(--bg-0);
+            color:var(--receipt);
+            min-height:100vh;
+        }
+
+        body::before{
+            content:"";
+            position:fixed;
+            inset:0;
+            background:repeating-linear-gradient(
+                0deg,
+                rgba(255,255,255,0.012),
+                rgba(255,255,255,0.012) 1px,
+                transparent 1px,
+                transparent 3px
+            );
+            pointer-events:none;
+            z-index:0;
+        }
+
+        a{ color:inherit; }
+
+        /* ===================== NAV ===================== */
+        .nav{
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            padding:20px 40px;
+            position:relative;
+            z-index:2;
+        }
+
+        .nav .brand{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            text-decoration:none;
+        }
+
+        .nav .brand .mark{
+            font-family:'VT323', monospace;
+            font-size:26px;
+            color:var(--amber);
+            letter-spacing:0.03em;
+            text-shadow:0 0 10px rgba(232,169,59,0.45);
+            line-height:1;
+        }
+
+        .nav-links{
+            display:flex;
+            align-items:center;
+            gap:14px;
+        }
+
+        .btn{
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            padding:10px 20px;
+            border-radius:2px;
+            font-family:'Space Grotesk', sans-serif;
+            font-weight:600;
+            font-size:13.5px;
+            letter-spacing:0.02em;
+            text-decoration:none;
+            transition:background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease, color 0.2s ease;
+            cursor:pointer;
+            border:1px solid transparent;
+        }
+
+        .btn-ghost{
+            color:var(--receipt);
+            border-color:rgba(250,248,242,0.25);
+            background:transparent;
+        }
+        .btn-ghost:hover{
+            background:rgba(250,248,242,0.08);
+            border-color:rgba(250,248,242,0.4);
+        }
+
+        .btn-solid{
+            background:var(--green);
+            color:#fff;
+        }
+        .btn-solid:hover{
+            background:var(--green-dark);
+            box-shadow:0 8px 20px -8px rgba(47,125,92,0.6);
+        }
+        .btn-solid:active,.btn-ghost:active{ transform:translateY(1px); }
+
+        .btn-lg{
+            padding:14px 28px;
+            font-size:14.5px;
+        }
+
+        /* ===================== TICKER ===================== */
+        .ticker-wrap{
+            position:relative;
+            z-index:2;
+            overflow:hidden;
+            background:var(--ink);
+            border-top:1px solid rgba(232,169,59,0.18);
+            border-bottom:1px solid rgba(232,169,59,0.18);
+        }
+
+        .ticker-track{
+            display:flex;
+            width:max-content;
+            animation:ticker-scroll 28s linear infinite;
+        }
+
+        .ticker-wrap:hover .ticker-track{
+            animation-play-state:paused;
+        }
+
+        .ticker-item{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            padding:10px 28px;
+            font-family:'IBM Plex Mono', monospace;
+            font-size:12px;
+            letter-spacing:0.05em;
+            color:var(--receipt);
+            white-space:nowrap;
+            border-right:1px dashed rgba(250,248,242,0.14);
+        }
+
+        .ticker-item .dot{
+            color:var(--amber);
+            font-size:10px;
+        }
+
+        .ticker-item .up{ color:var(--green); }
+        .ticker-item .down{ color:#c0716f; }
+
+        @keyframes ticker-scroll{
+            from{ transform:translateX(0); }
+            to{ transform:translateX(-50%); }
+        }
+
+        @media (prefers-reduced-motion: reduce){
+            .ticker-track{ animation:none; }
+        }
+
+        /* ===================== HERO ===================== */
+        .hero{
+            position:relative;
+            z-index:1;
+            padding:70px 40px 90px;
+            display:flex;
+            justify-content:center;
+            background:
+                radial-gradient(ellipse 70% 55% at 50% 0%, var(--amber-soft), transparent 65%),
+                linear-gradient(180deg, var(--bg-1), var(--bg-0) 60%);
+        }
+
+        .hero-inner{
+            width:100%;
+            max-width:1180px;
+            display:grid;
+            grid-template-columns:1.15fr 1fr;
+            gap:60px;
+            align-items:center;
+        }
+
+        .hero-copy .eyebrow{
+            display:inline-block;
+            font-family:'IBM Plex Mono', monospace;
+            font-size:11px;
+            letter-spacing:0.26em;
+            text-transform:uppercase;
+            color:var(--amber);
+            border:1px solid rgba(232,169,59,0.35);
+            background:rgba(232,169,59,0.08);
+            padding:6px 12px;
+            border-radius:20px;
+            margin-bottom:22px;
+        }
+
+        .hero-copy h1{
+            margin:0 0 20px;
+            font-family:'VT323', monospace;
+            font-size:clamp(48px, 6vw, 68px);
+            line-height:1.02;
+            letter-spacing:0.01em;
+            color:var(--receipt);
+        }
+
+        .hero-copy h1 span{
+            color:var(--amber);
+            text-shadow:0 0 18px rgba(232,169,59,0.4);
+        }
+
+        .hero-copy p{
+            font-size:15.5px;
+            line-height:1.7;
+            color:var(--ink-faint);
+            max-width:480px;
+            margin:0 0 32px;
+        }
+
+        .hero-cta{
+            display:flex;
+            flex-wrap:wrap;
+            gap:14px;
+            margin-bottom:28px;
+        }
+
+        .hero-note{
+            font-family:'IBM Plex Mono', monospace;
+            font-size:11px;
+            letter-spacing:0.04em;
+            color:var(--ink-faint);
+        }
+
+        /* ===== hero receipt mock ===== */
+        .hero-visual{
+            display:flex;
+            justify-content:center;
+        }
+
+        .mock-receipt{
+            background:linear-gradient(180deg, var(--receipt), var(--receipt-shade));
+            color:var(--ink);
+            width:100%;
+            max-width:300px;
+            padding:26px 24px 30px;
+            border-radius:3px;
+            box-shadow:0 40px 80px -20px rgba(0,0,0,0.65);
+            clip-path:polygon(
+                0% 0%, 100% 0%, 100% 96%,
+                95% 100%, 90% 96%, 85% 100%, 80% 96%, 75% 100%,
+                70% 96%, 65% 100%, 60% 96%, 55% 100%, 50% 96%,
+                45% 100%, 40% 96%, 35% 100%, 30% 96%, 25% 100%,
+                20% 96%, 15% 100%, 10% 96%, 5% 100%, 0% 100%
+            );
+            padding-bottom:46px;
+            transform:rotate(-2deg);
+        }
+
+        .mock-receipt .mr-head{
+            text-align:center;
+            border-bottom:1px dashed rgba(35,35,35,0.25);
+            padding-bottom:12px;
+            margin-bottom:16px;
+            font-family:'IBM Plex Mono', monospace;
+        }
+        .mock-receipt .mr-head .t{
+            font-size:11px;
+            letter-spacing:0.14em;
+            text-transform:uppercase;
+            font-weight:500;
+        }
+        .mock-receipt .mr-head .d{
+            margin-top:5px;
+            font-size:10px;
+            color:var(--ink-soft);
+        }
+
+        .mock-row{
+            display:flex;
+            justify-content:space-between;
+            font-family:'IBM Plex Mono', monospace;
+            font-size:11.5px;
+            padding:6px 0;
+            border-bottom:1px dotted rgba(35,35,35,0.18);
+        }
+        .mock-row .k{ color:var(--ink-soft); }
+        .mock-row .v{ font-weight:600; }
+
+        .mock-total{
+            display:flex;
+            justify-content:space-between;
+            align-items:baseline;
+            margin-top:14px;
+            padding-top:12px;
+            border-top:1px dashed rgba(35,35,35,0.25);
+            font-family:'IBM Plex Mono', monospace;
+        }
+        .mock-total .k{ font-size:11px; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-soft); }
+        .mock-total .v{ font-size:22px; font-weight:700; color:var(--green-dark); }
+
+        .mock-barcode{
+            margin-top:16px;
+            height:24px;
+            background:repeating-linear-gradient(
+                90deg,
+                var(--ink) 0px, var(--ink) 2px,
+                transparent 2px, transparent 3px,
+                var(--ink) 3px, var(--ink) 4px,
+                transparent 4px, transparent 7px,
+                var(--ink) 7px, var(--ink) 8px,
+                transparent 8px, transparent 11px
+            );
+            opacity:0.7;
+        }
+
+        /* ===================== FEATURES ===================== */
+        .features{
+            position:relative;
+            z-index:1;
+            padding:10px 40px 90px;
+            display:flex;
+            justify-content:center;
+            background:var(--bg-0);
+        }
+
+        .features-inner{
+            width:100%;
+            max-width:1180px;
+        }
+
+        .section-eyebrow{
+            font-family:'IBM Plex Mono', monospace;
+            font-size:11px;
+            letter-spacing:0.24em;
+            text-transform:uppercase;
+            color:var(--ink-faint);
+            text-align:center;
+            margin-bottom:10px;
+        }
+
+        .section-title{
+            font-family:'VT323', monospace;
+            font-size:32px;
+            text-align:center;
+            color:var(--receipt);
+            margin:0 0 40px;
+        }
+
+        .feature-grid{
+            display:grid;
+            grid-template-columns:repeat(3, 1fr);
+            gap:20px;
+        }
+
+        .feature-card{
+            background:linear-gradient(180deg, var(--receipt), var(--receipt-shade));
+            color:var(--ink);
+            border-radius:3px;
+            padding:26px 24px 22px;
+            border-top:3px solid var(--accent, var(--green));
+            box-shadow:0 20px 40px -20px rgba(0,0,0,0.55);
+        }
+
+        .feature-card .f-glyph{
+            font-family:'IBM Plex Mono', monospace;
+            font-size:24px;
+            color:var(--accent, var(--green));
+            margin-bottom:14px;
+            display:block;
+        }
+
+        .feature-card h3{
+            margin:0 0 8px;
+            font-family:'Space Grotesk', sans-serif;
+            font-size:16.5px;
+            font-weight:600;
+        }
+
+        .feature-card p{
+            margin:0;
+            font-size:13px;
+            line-height:1.6;
+            color:var(--ink-soft);
+        }
+
+        .f-sales{ --accent:var(--green); }
+        .f-staff{ --accent:var(--teal); }
+        .f-owners{ --accent:var(--amber); }
+
+        /* ===================== FOOTER ===================== */
+        .site-footer{
+            position:relative;
+            z-index:1;
+            padding:26px 40px;
+            border-top:1px solid rgba(250,248,242,0.08);
+            display:flex;
+            flex-wrap:wrap;
+            gap:12px;
+            align-items:center;
+            justify-content:space-between;
+            font-family:'IBM Plex Mono', monospace;
+            font-size:11px;
+            color:var(--ink-faint);
+            letter-spacing:0.03em;
+        }
+
+        .site-footer a{
+            text-decoration:none;
+            color:var(--ink-faint);
+            transition:color 0.15s ease;
+        }
+        .site-footer a:hover{ color:var(--amber); }
+
+        .footer-links{
+            display:flex;
+            gap:18px;
+        }
+
+        /* ===================== RESPONSIVE ===================== */
+        @media (max-width:980px){
+            .hero-inner{ grid-template-columns:1fr; gap:44px; }
+            .hero-visual{ order:-1; }
+            .hero-copy p{ max-width:100%; }
+            .feature-grid{ grid-template-columns:1fr 1fr; }
+        }
+
+        @media (max-width:640px){
+            .nav{ padding:16px 20px; flex-direction:column; gap:14px; }
+            .hero{ padding:44px 20px 60px; }
+            .features{ padding:0 20px 60px; }
+            .feature-grid{ grid-template-columns:1fr; }
+            .hero-copy h1{ font-size:44px; }
+            .hero-cta{ flex-direction:column; }
+            .btn-lg{ width:100%; justify-content:center; }
+            .site-footer{ flex-direction:column; align-items:flex-start; padding:20px; }
+        }
+
+        @media (min-width:1700px){
+            .hero-inner, .features-inner{ max-width:1360px; }
+        }
+    </style>
 </head>
 <body>
 
+    <nav class="nav">
+        <a href="/" class="brand">
+            <span class="mark">SALES ANALYTICS</span>
+        </a>
+        <div class="nav-links">
+            <a href="/login" class="btn btn-ghost">Login</a>
+            <a href="/owner_register" class="btn btn-solid">Register Your Shop</a>
+        </div>
+    </nav>
 
-    <a href="/">Home</a>
-    <a href="login">Login</a>
-    <a href="owner_register">Owner Registration</a>
-    
+    <div class="ticker-wrap">
+        <div class="ticker-track">
+            <span class="ticker-item"><span class="dot">●</span> 248 transactions today</span>
+            <span class="ticker-item"><span class="dot">●</span> Net sales <span class="up">₹48,210</span> <span class="up">▲ 12%</span></span>
+            <span class="ticker-item"><span class="dot">●</span> 6 staff currently on shift</span>
+            <span class="ticker-item"><span class="dot">●</span> Top category: Groceries</span>
+            <span class="ticker-item"><span class="dot">●</span> 3 new shops awaiting approval</span>
+            <span class="ticker-item"><span class="dot">●</span> Returns <span class="down">▼ 2</span></span>
+            <span class="ticker-item"><span class="dot">●</span> Avg. basket size ₹194</span>
+            <span class="ticker-item"><span class="dot">●</span> 12 branches reporting live</span>
+            <!-- duplicate set for a seamless loop -->
+            <span class="ticker-item"><span class="dot">●</span> 248 transactions today</span>
+            <span class="ticker-item"><span class="dot">●</span> Net sales <span class="up">₹48,210</span> <span class="up">▲ 12%</span></span>
+            <span class="ticker-item"><span class="dot">●</span> 6 staff currently on shift</span>
+            <span class="ticker-item"><span class="dot">●</span> Top category: Groceries</span>
+            <span class="ticker-item"><span class="dot">●</span> 3 new shops awaiting approval</span>
+            <span class="ticker-item"><span class="dot">●</span> Returns <span class="down">▼ 2</span></span>
+            <span class="ticker-item"><span class="dot">●</span> Avg. basket size ₹194</span>
+            <span class="ticker-item"><span class="dot">●</span> 12 branches reporting live</span>
+        </div>
+    </div>
+
+    <section class="hero">
+        <div class="hero-inner">
+            <div class="hero-copy">
+                <span class="eyebrow">For Shops &amp; Retail Teams</span>
+                <h1>Run the till.<br>Read the <span>numbers.</span></h1>
+                <p>Sales Analytics brings your staff, owners, and everyday sales onto one terminal — track revenue, manage your team, and keep every shop accountable from a single dashboard.</p>
+                <div class="hero-cta">
+                    <a href="/login" class="btn btn-solid btn-lg">Sign In →</a>
+                    <a href="/owner_register" class="btn btn-ghost btn-lg">Register Your Shop</a>
+                </div>
+                <span class="hero-note">No card required · Approval usually within 24 hours</span>
+            </div>
+
+            <div class="hero-visual">
+                <div class="mock-receipt">
+                    <div class="mr-head">
+                        <div class="t">Daily Summary</div>
+                        <div class="d">Today · All Branches</div>
+                    </div>
+                    <div class="mock-row"><span class="k">Transactions</span><span class="v">248</span></div>
+                    <div class="mock-row"><span class="k">Staff on Shift</span><span class="v">6</span></div>
+                    <div class="mock-row"><span class="k">Top Category</span><span class="v">Groceries</span></div>
+                    <div class="mock-row"><span class="k">Returns</span><span class="v">2</span></div>
+                    <div class="mock-total"><span class="k">Net Sales</span><span class="v">₹48,210</span></div>
+                    <div class="mock-barcode" aria-hidden="true"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="features">
+        <div class="features-inner">
+            <div class="section-eyebrow">What you get</div>
+            <div class="section-title">Everything the shop needs, one login away</div>
+
+            <div class="feature-grid">
+                <div class="feature-card f-sales">
+                    <span class="f-glyph">◧</span>
+                    <h3>Real-Time Sales Tracking</h3>
+                    <p>See revenue, top items, and trends as they happen — no waiting for end-of-day reports.</p>
+                </div>
+
+                <div class="feature-card f-staff">
+                    <span class="f-glyph">☺</span>
+                    <h3>Staff &amp; Owner Dashboards</h3>
+                    <p>Separate views for staff and owners, so everyone sees exactly what they need and nothing more.</p>
+                </div>
+
+                <div class="feature-card f-owners">
+                    <span class="f-glyph">☗</span>
+                    <h3>Approval-Based Onboarding</h3>
+                    <p>New shops register with their license and details, and go live once an admin reviews and approves.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <span>© 2026 Sales Analytics</span>
+        <div class="footer-links">
+            <a href="/">Home</a>
+            <a href="/login">Login</a>
+            <a href="/owner_register">Owner Registration</a>
+        </div>
+    </footer>
+
 </body>
 </html>

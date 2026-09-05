@@ -115,3 +115,5 @@ class feedback(models.Model):
     date=models.CharField(max_length=225)
 
 
+
+
