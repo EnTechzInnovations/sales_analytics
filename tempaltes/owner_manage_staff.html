@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    {% include 'owner_header.html' %}
+
+    <form action="" method="post" enctype="multipart/form-data">
+        <table>
+            <tr>
+                <th>Staff Name</th>
+                <td><input type="text" name="staff_name" id="staff_name"></td>
+            </tr>
+
+            <tr>
+                <th>Photo</th>
+                <td><input type="file" name="photo" id="photo"></td>
+            </tr>
+
+            <tr>
+                <th>Gender</th>
+                <td>
+                    <input type="radio" name="gender" id="gender" value="male">Male
+                    <input type="radio" name="gender" id="gender" value="female">Female
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    Age
+                </th>
+                <td><input type="number" name="age" id="age"></td>
+            </tr>
+
+            <tr>
+                <th>Phone</th>
+                <td><input type="text" name="phone" id="phone"></td>
+            </tr>
+
+            <tr>
+                <th>
+                    Email
+
+                </th>
+                <td><input type="email" name="email" id="email"></td>
+
+            </tr>
+
+            <tr>
+                <th>
+                    Address
+                </th>
+                <td><input type="text" name="address" id="address"></td>
+
+            </tr>
+            <tr>
+                <th>
+
+                    Joining Date
+                </th>
+                <td><input type="date" name="joining_date" id="joining_date"></td>
+            </tr>
+
+            <tr>
+                <th>Branch</th>
+                <td>
+                    <select name="branch_id">
+                        {% for i in br %}
+                        <option value="{{ i.branch_id }}">{{ i.branch_name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <th>
+                    User Name
+                </th>
+                <td><input type="text" name="uname"></td>
+            </tr>
+
+            <tr>
+                <th>
+                    Password
+                </th>
+                <td><input type="password" name="password"></td>
+            </tr>
+
+            <tr>
+                <td>
+                    <input type="submit" value="Add Staff">
+                </td>
+        </table>
+    </form>
+
+    <table border="1">
+        <tr>
+            <th>SL.no</th>
+            <th>Staff Name</th>
+            <th>Photo</th>
+            <th>Gender</th>
+            <th>Age</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Address</th>
+            <th>Joining Date</th>
+            <th>Branch Name</th>
+        </tr>
+
+        {% for i in data %}
+
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ i.name }}</td>
+            <td><img src="/static/own_reg_img/{{i.photo}}" width="100" height="100"></td>
+            <td>{{ i.gender }}</td>
+            <td>{{ i.age }}</td>
+            <td>{{ i.phone }}</td>
+            <td>{{ i.email }}</td>
+            <td>{{ i.address }}</td>
+            <td>{{ i.joining_date }}</td>
+            <td>{{ i.branch.branch_name }}</td>
+            <td><a href="/owner_update_staff/{{ i.staff_id }}">Update</a></td>
+            <td><a href="/owner_delete_staff/{{ i.staff_id }}">Delete</a></td>
+        </tr>
+        {% endfor %}
+
+    </table>
+
+</body>
+
+</html>

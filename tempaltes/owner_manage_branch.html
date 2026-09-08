@@ -10,6 +10,47 @@
     {% include 'owner_header.html' %}
 
 
+
+    {%if data %}
+
+       <form action="" method="post">
+        <table>
+            <tr>
+                <th>Branch Name</th>
+                <td><input type="text" name="branch_name" id="branch_name" value="{{data.branch_name}}"></td>
+            </tr>
+
+            <tr>
+                <th>Location</th>
+                <td><input type="text" name="location" id="location" value="{{data.location}}"></td>
+            </tr>
+
+            <tr>
+                <th>Phone</th>
+                <td><input type="text" name="phone" id="phone" value="{{data.phone}}"></td>
+            </tr>
+            
+            <tr>
+                <th>
+                    Manager Name
+                </th>
+                <td>
+                    <input type="text" name="manager_name" id="manager_name" value="{{data.manager_name}}">
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <input type="submit" value="Add Branch">
+                </td>
+            </tr>
+
+        </table>
+    </form>
+
+    {%else%}
+
+
     <form action="" method="post">
         <table>
             <tr>
@@ -54,7 +95,7 @@
             <th>MANAGER NAME</th>
         </tr>
 
-        {%for i in data%}
+        {%for i in x%}
         <tr>
 
             <td>{{forloop.counter}}</td>
@@ -71,6 +112,8 @@
         {%endfor%}
 
     </table>
+
+    {%endif%}
 
     
 </body>
