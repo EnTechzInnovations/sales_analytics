@@ -98,5 +98,45 @@ def owner_delete_staff(request,id):
 
 
 def owner_update_staff(request,id):
+    stt=staff.objects.get(staff_id=id)
+    br=branch.objects.filter(owner_id=request.session['owner_id'])
+
+
+    if request.method=='POST':
+        branch_id=request.POST['branch_id']
+        staff_name=request.POST['staff_name']
+        gender=request.POST['gender']
+        age=request.POST['age']
+        phone=request.POST['phone']
+        email=request.POST['email']
+        address=request.POST['address']
+        joining_date=request.POST['joining_date']
+        photo=request.FILES['photo']
+        username=request.POST['uname']
+        password=request.POST['password']
+
+
+        fs= FileSystemStorage()
+        image=fs.save(photo.name,photo)
         
-    return  render(request,'owner_manage_staff.html')
+
+        stt.branch_id=branch_id
+        stt.staff_name=staff_name
+        stt.gender=gender
+        stt.age=age
+        stt.phone=phone
+        stt.email=email
+        stt.address=address
+        stt.joining_date=joining_date
+        stt.photo=image
+        stt.username=username
+        stt.password=password
+        stt.save()
+
+        return HttpResponse("<script>alert('Updated Successfully');window.location='/owner_manage_staff';</script>")
+
+
+    return  render(request,'owner_manage_staff.html',{'stt':stt,'br':br})
+
+
+ 

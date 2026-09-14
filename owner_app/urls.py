@@ -9,6 +9,7 @@ urlpatterns = [
     path('owner_update_branch/<id>',views.owner_update_branch,name='owner_update_branch'),
     path('owner_manage_staff',views.owner_manage_staff,name='owner_manage_staff'),
     path('owner_delete_staff/<id>',views.owner_delete_staff,name='owner_delete_staff'),
+    path('owner_update_staff/<id>',views.owner_update_staff,name='owner_update_staff'),
     
 
  
