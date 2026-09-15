@@ -100,6 +100,7 @@ def owner_delete_staff(request,id):
 def owner_update_staff(request,id):
     stt=staff.objects.get(staff_id=id)
     br=branch.objects.filter(owner_id=request.session['owner_id'])
+    print(stt,"/////////")
 
 
     if request.method=='POST':
@@ -133,10 +134,87 @@ def owner_update_staff(request,id):
         stt.password=password
         stt.save()
 
+
         return HttpResponse("<script>alert('Updated Successfully');window.location='/owner_manage_staff';</script>")
 
 
     return  render(request,'owner_manage_staff.html',{'stt':stt,'br':br})
 
 
- 
+
+
+def owner_manage_product(request):
+    stt=product_category.objects.all()
+    br=branch.objects.filter(owner_id=request.session['owner_id'])
+    pd=product.objects.filter(owner_id=request.session['owner_id'])
+
+    if request.method=='POST':
+        product_name=request.POST['product_name']
+        brand=request.POST['brand']
+        price=request.POST['price']
+        stock=request.POST['stock']
+        stock=request.POST['stock']
+        description=request.POST['description']
+        photo=request.FILES['image']
+        expriry_date=request.POST['expriry_date']
+        branch_id=request.POST['branch_id']
+        category_id=request.POST['category_id']
+
+        fs= FileSystemStorage()
+        image=fs.save(photo.name,photo)
+
+        add=product(product_name=product_name,brand=brand,price=price,stock=stock,description=description,image=image,expiry_date=expriry_date,branch_id=branch_id,category_id=category_id,owner_id=request.session['owner_id'])
+        add.save()
+
+        return HttpResponse("<script>alert('Add Successfully');window.location='/owner_manage_product';</script>")
+
+
+    return render(request,'owner_manage_product.html',{'stt':stt,'br':br,'pd':pd})
+
+
+
+def owner_delete_product(request,id):
+    dele=product.objects.get(product_id=id)
+    dele.delete()
+    return HttpResponse("<script>alert('Delete Successfully');window.location='/owner_manage_product';</script>")
+
+
+def owner_update_product(request,id):
+    stt=product_category.objects.all()
+    br=branch.objects.filter(owner_id=request.session['owner_id'])
+    pd_data=product.objects.filter(owner_id=request.session['owner_id'])
+
+    if request.method=='POST':
+        product_name=request.POST['product_name']
+        brand=request.POST['brand']
+        price=request.POST['price']
+        stock=request.POST['stock']
+        stock=request.POST['stock']
+        description=request.POST['description']
+        photo=request.FILES['image']
+        expriry_date=request.POST['expriry_date']
+        branch_id=request.POST['branch_id']
+        category_id=request.POST['category_id']
+
+
+        fs= FileSystemStorage()
+        image=fs.save(photo.name,photo)
+
+        pd_data.product_name=product_name
+        pd_data.brand=brand
+        pd_data.price=price
+        pd_data.stock=stock
+        pd_data.description=description
+        pd_data.image=image
+        pd_data.expriy_date=expriry_date
+        pd_data.branch_id=branch_id
+        pd_data.category_id=category_id
+        pd_data.save()
+
+        return HttpResponse("<script>alert('Add Successfully');window.location='/owner_manage_product';</script>")
+
+        
+        
+    
+    return render(request,'owner_manage_product.html',{'stt':stt,'br':br,'pd_data':pd_data})
+

@@ -10,9 +10,10 @@ urlpatterns = [
     path('owner_manage_staff',views.owner_manage_staff,name='owner_manage_staff'),
     path('owner_delete_staff/<id>',views.owner_delete_staff,name='owner_delete_staff'),
     path('owner_update_staff/<id>',views.owner_update_staff,name='owner_update_staff'),
-    
+    path('owner_manage_product',views.owner_manage_product,name='owner_manage_product'),
+    path('owner_delete_product/<id>',views.owner_delete_product,name='owner_delete_product'),
+    path('owner_update_product/<id>',views.owner_update_product,name='owner_update_product')
 
- 
     
    
 ]

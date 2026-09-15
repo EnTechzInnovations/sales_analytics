@@ -20,12 +20,12 @@
         <table>
             <tr>
                 <th>Staff Name</th>
-                <td><input type="text" name="staff_name" id="staff_name" value="{{stt.staff_name}}"></td>
+                <td><input type="text" name="staff_name" id="staff_name" value="{{stt.name}}"></td>
             </tr>
 
             <tr>
                 <th>Photo</th>
-                <td><input type="file" name="photo" id="photo"></td>
+                <td><input type="file" name="photo" id="photo"  value="{{stt.staff_photo}}"></td>
             </tr>
 
             <tr>
@@ -40,12 +40,12 @@
                 <th>
                     Age
                 </th>
-                <td><input type="number" name="age" id="age"></td>
+                <td><input type="number" name="age" id="age"  value="{{stt.age}}"></td>
             </tr>
 
             <tr>
                 <th>Phone</th>
-                <td><input type="text" name="phone" id="phone"></td>
+                <td><input type="text" name="phone" id="phone"  value="{{stt.phone}}"></td>
             </tr>
 
             <tr>
@@ -53,7 +53,7 @@
                     Email
 
                 </th>
-                <td><input type="email" name="email" id="email"></td>
+                <td><input type="email" name="email" id="email" value="{{stt.email}}"></td>
 
             </tr>
 
@@ -61,7 +61,7 @@
                 <th>
                     Address
                 </th>
-                <td><input type="text" name="address" id="address"></td>
+                <td><input type="text" name="address" id="address"  value="{{stt.address}}"></td>
 
             </tr>
             <tr>
@@ -69,7 +69,7 @@
 
                     Joining Date
                 </th>
-                <td><input type="date" name="joining_date" id="joining_date"></td>
+                <td><input type="date" name="joining_date" id="joining_date" value="{{stt.joining_date}}" ></td>
             </tr>
 
             <tr>
@@ -87,14 +87,14 @@
                 <th>
                     User Name
                 </th>
-                <td><input type="text" name="uname"></td>
+                <td><input type="text" name="uname" value="{{stt.login.user_name}}"></td>
             </tr>
 
             <tr>
                 <th>
                     Password
                 </th>
-                <td><input type="password" name="password"></td>
+                <td><input type="password" name="password" value="{{stt.login.password}}"></td>
             </tr>
 
             <tr>
