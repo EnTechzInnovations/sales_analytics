@@ -27,11 +27,11 @@
             </tr>
             <tr>
                 <th>Price</th>
-                <td><input type="text" name="price" id="price" {{pd_data.price}}></td>
+                <td><input type="text" name="price" id="price" value="{{pd_data.price}}"></td>
             </tr>
             <tr>
                 <th>Stock</th>
-                <td><input type="text" name="stock" id="stock"{{pd_data.stock}}></td>
+                <td><input type="text" name="stock" id="stock" value="{{pd_data.stock}}" ></td>
             </tr>
             <tr>
                 <th>Description</th>
@@ -78,8 +78,8 @@
     </form>
 
 
-
     {%else%}
+
 
     <form action="" method="post" enctype="multipart/form-data">
         <table>
@@ -120,6 +120,7 @@
                         <option value="{{ i.branch_id }}">{{ i.branch_name }}</option>
                         {% endfor %}
                     </select>
+                    
                 </td>
             </tr>
 
@@ -161,6 +162,7 @@
         </tr>
 
         {%for i in pd%}
+
         <tr>
             <td>{{forloop.counter}}</td>
             <td>{{i.product_name}}</td>
@@ -182,8 +184,8 @@
     {%endif%}
 
 
-    {% include 'footer.html' %}
 
+    {% include 'footer.html' %}
 
 
 

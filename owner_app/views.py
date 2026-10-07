@@ -182,7 +182,9 @@ def owner_delete_product(request,id):
 def owner_update_product(request,id):
     stt=product_category.objects.all()
     br=branch.objects.filter(owner_id=request.session['owner_id'])
-    pd_data=product.objects.filter(owner_id=request.session['owner_id'])
+    pd_data=product.objects.get(owner_id=id)
+
+    print(pd_data,"?/////////////////////////")
 
     if request.method=='POST':
         product_name=request.POST['product_name']
@@ -200,6 +202,7 @@ def owner_update_product(request,id):
         fs= FileSystemStorage()
         image=fs.save(photo.name,photo)
 
+
         pd_data.product_name=product_name
         pd_data.brand=brand
         pd_data.price=price
@@ -211,10 +214,16 @@ def owner_update_product(request,id):
         pd_data.category_id=category_id
         pd_data.save()
 
-        return HttpResponse("<script>alert('Add Successfully');window.location='/owner_manage_product';</script>")
+        return HttpResponse("<script>alert('Update Successfully');window.location='/owner_manage_product';</script>")
 
         
-        
-    
     return render(request,'owner_manage_product.html',{'stt':stt,'br':br,'pd_data':pd_data})
+
+
+
+
+
+
+
+
 

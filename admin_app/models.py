@@ -116,4 +116,22 @@ class feedback(models.Model):
 
 
 
+class user(models.Model):
+    user_id=models.AutoField(primary_key=True)
+    login=models.ForeignKey('login',on_delete=models.CASCADE)
+    name=models.CharField(max_length=225)
+    phone=models.CharField(max_length=225)
+    email_id=models.CharField(max_length=225)
+    place=models.CharField(max_length=225)
+
+
+class booking(models.Model):
+    booking_id=models.AutoField(primary_key=True)
+    product_id=models.ForeignKey('product',on_delete=models.CASCADE)
+    user_id=models.ForeignKey('user',on_delete=models.CASCADE)
+    date=models.CharField(max_length=225)
+    payment_mode=models.CharField(max_length=225)
+    quantity=models.CharField(max_length=225)
+    status=models.CharField(max_length=225)
+    
 

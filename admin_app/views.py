@@ -40,7 +40,7 @@ def login_section(request):
 
     return render(request,'login.html')
 
-
+  
 
 
 def owner_register(request):
@@ -177,5 +177,6 @@ def admin_send_reply(request,id):
         return HttpResponse("<script>alert('Reply Send Successfully');window.location='/admin_home';</script>")
 
     return render(request,'admin_send_reply.html')
+
 
 
