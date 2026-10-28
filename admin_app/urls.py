@@ -20,7 +20,5 @@ urlpatterns = [
     path('admin_send_reply/<id>',views.admin_send_reply,name='admin_send_reply'),
 
     
-
-
    
 ]

@@ -26,6 +26,13 @@ def login_section(request):
             if  lg.user_type=='admin':
                 return HttpResponse("<script>alert('login success');window.location='/admin_home';</script>")
 
+            if  lg.user_type=='staff':
+                st=staff.objects.get(login_id=  request.session['login_id'])
+
+                if st:
+                    request.session['staff_id']=st.pk
+                return HttpResponse("<script>alert('login success');window.location='/staff_home';</script>")
+
             if lg.user_type=='owner':
                 ow=owner.objects.get(login_id=  request.session['login_id'])
                 
@@ -56,6 +63,8 @@ def owner_register(request):
         state=request.POST['state']
         pincode=request.POST['pincode']
         license=request.FILES['license']
+        latitude=request.POST['latitude'] 
+        longitude=request.POST['longitude']     
         username=request.POST['user_name']
         password=request.POST['password']
 
@@ -69,21 +78,15 @@ def owner_register(request):
         lg=login(user_name=username,password=password,user_type='pending')
         lg.save()
 
-        own=owner(shop_name=shop_name,owner_name=owner_name,photo=image1,phone=phone,email=email,address=address,district=district,state=state,pincode=pincode,License=image2,login=lg)
+        own=owner(shop_name=shop_name,owner_name=owner_name,photo=image1,phone=phone,email=email,address=address,district=district,state=state,pincode=pincode,License=image2,login=lg,latitude=latitude,longitude=longitude)
         own.save()
-
-
-        return HttpResponse("<script>alert('Registration Sucess');winow.location='/login';</script>")
-
-
+        
+        return HttpResponse("<script>alert('Register success');window.location='/login';</script>")
 
     return render(request,'owner_registration.html')
 
 
 
-
-
-   
 
 def admin_home(request):
 
@@ -177,6 +180,5 @@ def admin_send_reply(request,id):
         return HttpResponse("<script>alert('Reply Send Successfully');window.location='/admin_home';</script>")
 
     return render(request,'admin_send_reply.html')
-
 
 

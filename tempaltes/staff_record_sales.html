@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Record Sales</title>
+</head>
+<body>
+
+    {% include 'staff_header.html' %}
+
+    <h2>Supermarket Billing</h2>
+
+    <form action="" method="post">
+
+        <table>
+
+            <tr>
+                <th>Customer Name</th>
+                <td>
+                    <input type="text" name="customer_name" required>
+                </td>
+            </tr>
+
+            <tr>
+                <th>Phone</th>
+                <td>
+                    <input type="text" name="phone" required>
+                </td>
+            </tr>
+
+            <tr>
+                <th>Email</th>
+                <td>
+                    <input type="email" name="email">
+                </td>
+            </tr>
+
+            <tr>
+                <th>Address</th>
+                <td>
+                    <textarea name="address" cols="30" rows="5"></textarea>
+                </td>
+            </tr>
+
+            <tr>
+                <th>Gender</th>
+                <td>
+
+                    <select name="gender" required>
+
+                        <option value="">Select Gender</option>
+
+                        <option value="Male">
+                            Male
+                        </option>
+
+                        <option value="Female">
+                            Female
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </td>
+            </tr>
+
+
+            <tr>
+                <th>Product</th>
+
+                <td>
+
+                    <select name="product" required>
+
+                        <option value="">
+                            Select Product
+                        </option>
+
+                        {% for i in products %}
+
+                        <option value="{{i.product_id}}">
+
+                            {{i.product_name}}
+                            - Rs.{{i.price}}
+                            - Stock: {{i.stock}}
+
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </td>
+            </tr>
+
+
+            <tr>
+                <th>Quantity</th>
+
+                <td>
+                    <input
+                        type="number"
+                        name="quantity"
+                        min="1"
+                        required
+                    >
+                </td>
+
+            </tr>
+
+
+            <tr>
+                <th>Payment Mode</th>
+
+                <td>
+
+                    <select name="payment_mode" required>
+
+                        <option value="">
+                            Select Payment Mode
+                        </option>
+
+                        <option value="Cash">
+                            Cash
+                        </option>
+
+                        <option value="UPI">
+                            UPI
+                        </option>
+
+                        <option value="Card">
+                            Card
+                        </option>
+
+                    </select>
+
+                </td>
+
+            </tr>
+
+
+            <tr>
+
+                <td colspan="2">
+
+                    <input
+                        type="submit"
+                        value="Generate Bill"
+                    >
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    </form>
+
+</body>
+</html>

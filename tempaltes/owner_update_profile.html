@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <form action="" method="post" enctype="multipart/form-data">
+        <table>
+            <tr>
+                <th>Shop Name</th>
+                <td><input type="text" name="shop_name" value="{{data.shop_name}}"></td>
+            </tr>
+
+            <tr>
+                <th>Owner Name</th>
+                <td><input type="text" name="owner_name" value="{{data.owner_name}}"></td>
+            </tr>
+
+            <tr>
+                <th>Photo</th>
+                <td><input type="file" name="photo"><img src="/static/own_reg_img/{{data.photo}}" width="100px" height="100px"></td>
+            </tr>
+
+            <tr>
+                <th>Phone</th>
+                <td><input type="text" name="phone" value="{{data.phone}}"></td>
+            </tr>
+
+            <tr>
+                <th>Email</th>
+                <td><input type="text" name="email" value="{{data.email}}"></td>
+            </tr>
+
+            <tr>
+                <th>Address</th>
+                <td><textarea name="address" id="" cols="30" rows="10">{{data.address}}</textarea></td>
+            </tr>
+
+            <tr>
+                <th>District</th>
+                <td><input type="text" name="district" value="{{data.district}}"></td>
+            </tr>
+
+            <tr>
+                <th>State</th>
+                <td><input type="text" name="state" value="{{data.state}}"></td>
+            </tr>
+
+            <tr>
+                <th>Pincode</th>
+                <td><input type="text" name="pincode" value="{{data.pincode}}"></td>
+            </tr>
+
+            <tr>
+                <th>License</th>
+                <td><input type="file" name="license"><img src="/static/own_reg_img/{{data.License}}" width="100px" height="100px"></td>
+            </tr>
+
+            <tr>
+                <td><input type="submit" value="Update Profile"></td>
+            </tr>
+
+        </table>
+    
+</body>
+</html>

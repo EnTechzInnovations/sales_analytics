@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+     {% include 'owner_header.html' %}
+
+    <form action="" method="post">
+        <table>
+
+            <tr>
+                <th>Complaint</th>
+                <td><textarea name="complaint" id="" cols="30" rows="10"></textarea></td>
+                
+            </tr>
+
+            <tr>
+                <td><input type="submit" value="Send Complaint"></td>
+            </tr>
+        </table>
+    </form>
+    
+
+    <table border="1">
+        <tr>
+            <th>Complaint</th>
+            <th>Date</th>
+            <th>Reply</th>
+        </tr>
+        {% for i in comp %}
+        <tr>
+            <td>{{i.complaint}}</td>
+            <td>{{i.date}}</td>
+            <td>{{i.reply}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% include 'footer.html' %}
+    
+
+</body>
+</html>

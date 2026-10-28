@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Details</title>
+</head>
+<body>
+
+    {% include 'staff_header.html' %}
+
+    <h2>Customer Details</h2>
+
+    <table border="1">
+
+        <tr>
+            <th>Customer Name</th>
+            <td>{{data.customer_name}}</td>
+        </tr>
+
+        <tr>
+            <th>Phone</th>
+            <td>{{data.phone}}</td>
+        </tr>
+
+        <tr>
+            <th>Email</th>
+            <td>{{data.email}}</td>
+        </tr>
+
+        <tr>
+            <th>Address</th>
+            <td>{{data.address}}</td>
+        </tr>
+
+        <tr>
+            <th>Gender</th>
+            <td>{{data.gender}}</td>
+        </tr>
+
+    </table>
+
+</body>
+</html>

@@ -61,10 +61,7 @@
     z-index:1;
   }
 
-  .display{
-    text-align:center;
-    margin-bottom:26px;
-  }
+  .display{ text-align:center; margin-bottom:26px; }
 
   .display .brand{
     font-family:'VT323', monospace;
@@ -118,10 +115,7 @@
 
   form{ padding:28px 30px 30px; }
 
-  .section{
-    margin-bottom:26px;
-  }
-
+  .section{ margin-bottom:26px; }
   .section:last-of-type{ margin-bottom:0; }
 
   .section-label{
@@ -185,9 +179,7 @@
   }
 
   /* ===== file upload styling ===== */
-  .file-field{
-    position:relative;
-  }
+  .file-field{ position:relative; }
 
   .file-field input[type="file"]{
     position:absolute;
@@ -235,6 +227,52 @@
   .file-field:hover .file-btn{
     border-color:var(--green);
     background:rgba(255,255,255,0.55);
+  }
+
+  /* ===== map picker ===== */
+  .map-tools{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+
+  button.map-btn{
+    background:transparent;
+    color:var(--green);
+    border:1px solid var(--green);
+    border-radius:2px;
+    padding:9px 14px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    cursor:pointer;
+    transition:background 0.2s ease, color 0.2s ease;
+  }
+
+  button.map-btn:hover{ background:var(--green); color:#fff; }
+  button.map-btn:focus-visible{ outline:2px solid var(--ink); outline-offset:3px; }
+
+  .map-hint{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    color:var(--ink-soft);
+  }
+
+  .map-wrap{
+    display:none;
+    margin-top:14px;
+    border:1px solid var(--line);
+    border-radius:2px;
+    overflow:hidden;
+  }
+
+  .map-wrap.open{ display:block; }
+
+  #dvMap{
+    width:100%;
+    height:360px;
   }
 
   /* ===== submit ===== */
@@ -310,6 +348,7 @@
     .ledger-head{ padding:18px 20px; }
     .barcode{ margin:0 20px 20px; }
     .display .brand{ font-size:34px; }
+    #dvMap{ height:300px; }
   }
 </style>
 </head>
@@ -396,6 +435,26 @@
               </div>
               <input type="file" id="license" name="license" accept="image/*,application/pdf">
             </div>
+
+            <div class="field">
+              <label for="slati">Latitude</label>
+              <input type="text" id="slati" name="latitude" placeholder="click on map" required>
+            </div>
+
+            <div class="field">
+              <label for="elongi">Longitude</label>
+              <input type="text" id="elongi" name="longitude" placeholder="click on map" required>
+            </div>
+
+            <div class="field span-2">
+              <div class="map-tools">
+                <button type="button" class="map-btn" id="viewMapBtn">View Map</button>
+                <span class="map-hint">Click on the map to pick your shop's location.</span>
+              </div>
+              <div class="map-wrap" id="mapWrap">
+                <div id="dvMap"></div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -439,7 +498,56 @@
       var nameEl = input.previousElementSibling.querySelector('.name');
       nameEl.dataset.default = nameEl.textContent;
     });
+
+    // ===== Google Maps latitude / longitude picker =====
+    var map = null;
+    var marker = null;
+
+    function initMap() {
+      var mapOptions = {
+        center: new google.maps.LatLng(9.9763482, 76.286272),
+        zoom: 14,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
+      map = new google.maps.Map(document.getElementById("dvMap"), mapOptions);
+
+      // If lat/lng already typed in, show a marker there
+      var lat = parseFloat(document.getElementById('slati').value);
+      var lng = parseFloat(document.getElementById('elongi').value);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        var pos = new google.maps.LatLng(lat, lng);
+        placeMarker(pos);
+        map.setCenter(pos);
+      }
+
+      google.maps.event.addListener(map, 'click', function (e) {
+        placeMarker(e.latLng);
+        document.getElementById('slati').value = e.latLng.lat().toFixed(7);
+        document.getElementById('elongi').value = e.latLng.lng().toFixed(7);
+      });
+    }
+
+    function placeMarker(latLng) {
+      if (marker) {
+        marker.setPosition(latLng);
+      } else {
+        marker = new google.maps.Marker({ position: latLng, map: map });
+      }
+    }
+
+    document.getElementById('viewMapBtn').addEventListener('click', function () {
+      document.getElementById('mapWrap').classList.add('open');
+      if (!map && window.google && google.maps) {
+        initMap();
+      } else if (map) {
+        google.maps.event.trigger(map, 'resize');
+      }
+    });
   </script>
+
+  <!-- Replace YOUR_API_KEY with your Google Maps JavaScript API key -->
+
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyD3MPnSnyWwNmpnVEFkaddVvy_GWtxSejs&sensor=false"></script>
 
 </body>
 </html>

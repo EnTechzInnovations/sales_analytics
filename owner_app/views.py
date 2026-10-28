@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -203,6 +204,9 @@ def owner_update_product(request,id):
         image=fs.save(photo.name,photo)
 
 
+        
+
+
         pd_data.product_name=product_name
         pd_data.brand=brand
         pd_data.price=price
@@ -222,8 +226,71 @@ def owner_update_product(request,id):
 
 
 
+def owner_send_compalint(request):
+    date=date = datetime.now().date()
+    comp=complaint.objects.filter(login_id=request.session['login_id'])
+    if request.method=='POST':
+        complaints=request.POST['complaint']
+
+        x=complaint(complaint=complaints,login_id=request.session['login_id'],date=date,reply='pending')
+        x.save()
+
+        return HttpResponse("<script>alert('Complaint Send Successfully');window.location='/owner_send_compalint';</script>")
+
+    return render(request,'owner_send_complaint.html',{'comp':comp})
 
 
 
+def owner_send_feedback(request):
+    date=date = datetime.now().date()
+    if request.method=='POST':
+        feedbacks=request.POST['feedback']
+
+        x=feedback(feedback=feedbacks,login_id=request.session['login_id'],date=date)
+        x.save()
+
+        return HttpResponse("<script>alert('Feedback Send Successfully');window.location='/owner_send_feedback';</script>")
+
+    return render(request,'owner_send_feedback.html')
 
 
+
+def owner_view_profile(request):
+    data=owner.objects.get(owner_id=request.session['owner_id'])
+    return render(request,'owner_view_profile.html',{'data':data})
+
+
+def  owner_update_profile(request,id):
+    data=owner.objects.get(owner_id=id)
+
+    if request.method=='POST':
+        owner_name=request.POST['owner_name']
+        phone=request.POST['phone']
+        email=request.POST['email']
+        address=request.POST['address']
+        photo=request.FILES['photo']
+        license=request.FILES['license']
+
+
+        fs= FileSystemStorage()
+        image=fs.save(photo.name,photo)
+
+        fs= FileSystemStorage()
+        image2=fs.save(license.name,license)
+
+        data.owner_name=owner_name
+        data.phone=phone
+        data.email=email
+        data.address=address
+        data.photo=image
+        data.License=image2
+        data.save()
+
+        return HttpResponse("<script>alert('Profile Updated Successfully');window.location='/owner_view_profile';</script>")
+
+    return render(request,'owner_update_profile.html',{'data':data})
+
+
+def owner_view_customers(request):
+    data=customer.objects.filter(branch__owner_id=request.session['owner_id'])
+    return render(request,'owner_view_customers.html',{'data':data})

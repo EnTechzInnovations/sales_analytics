@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Analysis</title>
+</head>
+<body>
+
+    {% include 'staff_header.html' %}
+
+    <h2>Sales Analysis Dashboard</h2>
+
+    <h3>Sales Summary</h3>
+
+    <table border="1">
+
+        <tr>
+            <th>Sales Period</th>
+            <th>Total Revenue (Rs.)</th>
+            <th>Number of Bills</th>
+            <th>View Details</th>
+        </tr>
+
+        <tr>
+            <td>Daily Sales</td>
+            <td>{{today_total}}</td>
+            <td>{{today_count}}</td>
+            <td>
+                <a href="/staff_view_daily_sales?period=daily">
+                    View Daily Sales
+                </a>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Weekly Sales</td>
+            <td>{{weekly_total}}</td>
+            <td>{{weekly_count}}</td>
+            <td>
+                <a href="/staff_view_daily_sales?period=weekly">
+                    View Weekly Sales
+                </a>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Monthly Sales</td>
+            <td>{{monthly_total}}</td>
+            <td>{{monthly_count}}</td>
+            <td>
+                <a href="/staff_view_daily_sales?period=monthly">
+                    View Monthly Sales
+                </a>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Yearly Sales</td>
+            <td>{{yearly_total}}</td>
+            <td>{{yearly_count}}</td>
+            <td>
+                <a href="/staff_view_daily_sales?period=yearly">
+                    View Yearly Sales
+                </a>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Total Sales</td>
+            <td>{{total_sales}}</td>
+            <td>{{total_count}}</td>
+            <td>
+                <a href="/staff_view_daily_sales?period=total">
+                    View All Sales
+                </a>
+            </td>
+        </tr>
+
+    </table>
+
+    <br>
+
+    <h3>
+        {% if period == 'daily' %}
+            Today's Sales Details
+        {% elif period == 'weekly' %}
+            This Week's Sales Details
+        {% elif period == 'monthly' %}
+            This Month's Sales Details
+        {% elif period == 'yearly' %}
+            This Year's Sales Details
+        {% else %}
+            All Sales Details
+        {% endif %}
+    </h3>
+
+    <table border="1">
+
+        <tr>
+            <th>Bill Number</th>
+            <th>Customer Name</th>
+            <th>Product Name</th>
+            <th>Total Amount</th>
+            <th>Payment Mode</th>
+            <th>Sales Date</th>
+        </tr>
+
+        {% for i in data %}
+
+        <tr>
+            <td>{{i.bill_number}}</td>
+            <td>{{i.customer.customer_name}}</td>
+            <td>{{i.product.product_name}}</td>
+            <td>{{i.total_amount}}</td>
+            <td>{{i.payment_mode}}</td>
+            <td>{{i.sales_date}}</td>
+        </tr>
+
+        {% empty %}
+
+        <tr>
+            <td colspan="6">No Sales Found</td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</body>
+</html>

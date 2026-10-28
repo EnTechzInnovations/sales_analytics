@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Takeaway Bookings</title>
+</head>
+<body>
+
+    {% include 'staff_header.html' %}
+
+    <h2>Takeaway Product Bookings</h2>
+
+    <table border="1">
+
+        <tr>
+            <th>Product Name</th>
+            <th>Price</th>
+            <th>Customer Name</th>
+            <th>Phone</th>
+            <th>Email</th>
+            <th>Place</th>
+            <th>Booking Date</th>
+            <th>Payment Mode</th>
+            <th>Quantity</th>
+            <th>Total Amount</th>
+            <th>Status</th>
+            <th>Update Status</th>
+        </tr>
+
+        {% for i in data %}
+
+        <tr>
+
+            <td>{{i.product_id.product_name}}</td>
+            <td>{{i.product_id.price}}</td>
+
+            <td>{{i.user_id.name}}</td>
+
+            <td>{{i.user_id.phone}}</td>
+
+            <td>{{i.user_id.email_id}}</td>
+
+            <td>{{i.user_id.place}}</td>
+
+            <td>{{i.date}}</td>
+
+            <td>{{i.payment_mode}}</td>
+
+            <td>{{i.quantity}}</td>
+
+            <td>Rs. {{i.total_amount}}</td>
+
+            <td>{{i.status}}</td>
+
+            <td>
+
+                {% if i.status != 'paid' %}
+
+                <a href="/staff_update_booking_status/{{i.booking_id}}">
+                    Update to Paid
+                </a>
+
+                {% else %}
+
+                Paid
+
+                {% endif %}
+
+            </td>
+
+        </tr>
+
+        {% empty %}
+
+        <tr>
+            <td colspan="10">No Takeaway Bookings Found</td>
+        </tr>
+
+        {% endfor %}
+
+    </table>
+
+</body>
+</html>

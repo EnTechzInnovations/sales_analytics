@@ -23,6 +23,8 @@ class owner(models.Model):
     state=models.CharField(max_length=100)
     pincode=models.CharField(max_length=100)
     License=models.CharField(max_length=100)
+    latitude=models.CharField(max_length=100)
+    longitude=models.CharField(max_length=100)
 
 
 class branch(models.Model):
@@ -73,7 +75,7 @@ class product(models.Model):
 
 class customer(models.Model):
     customer_id=models.AutoField(primary_key=True)
-    owner=models.ForeignKey('owner',on_delete=models.CASCADE)
+    branch=models.ForeignKey('branch',on_delete=models.CASCADE)
     customer_name=models.CharField(max_length=225)
     phone=models.ImageField(max_length=225)
     email=models.CharField(max_length=225)
@@ -123,6 +125,8 @@ class user(models.Model):
     phone=models.CharField(max_length=225)
     email_id=models.CharField(max_length=225)
     place=models.CharField(max_length=225)
+    latitude=models.CharField(max_length=100)
+    longitude=models.CharField(max_length=100)
 
 
 class booking(models.Model):
@@ -133,5 +137,6 @@ class booking(models.Model):
     payment_mode=models.CharField(max_length=225)
     quantity=models.CharField(max_length=225)
     status=models.CharField(max_length=225)
+
     
 

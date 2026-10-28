@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-dud8-3$q=g^-mc_sdh-t4%0e+shx83p#)d68y37eo)8a10yiif
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'admin_app',
     'owner_app',
+    'user_app',
 ]
 
 MIDDLEWARE = [
@@ -132,3 +133,4 @@ MEDIA_ROOT=os.path.join(BASE_DIR,'static/own_reg_img')
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
