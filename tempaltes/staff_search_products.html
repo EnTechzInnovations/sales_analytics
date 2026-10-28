@@ -1,75 +1,514 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search Products</title>
+
+    <title>Search Products | Supermarket</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --secondary: #0f766e;
+            --background: #f4f8f6;
+            --white: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --success-bg: #d1fae5;
+            --danger: #dc2626;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        .page-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 35px 25px 50px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 28px;
+        }
+
+        .page-header h1 {
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: -0.8px;
+            color: #123b31;
+        }
+
+        .page-header p {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .product-count {
+            background: var(--success-bg);
+            color: var(--primary-dark);
+            padding: 10px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* Search panel */
+
+        .search-panel {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 24px;
+            margin-bottom: 32px;
+            box-shadow: 0 5px 20px rgba(15, 118, 110, 0.05);
+        }
+
+        .search-panel h2 {
+            font-size: 17px;
+            margin-bottom: 7px;
+            color: #123b31;
+        }
+
+        .search-panel p {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        .search-form {
+            display: flex;
+            gap: 12px;
+            align-items: stretch;
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            flex: 1;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 19px;
+            color: var(--muted);
+        }
+
+        .search-form input[type="text"] {
+            width: 100%;
+            height: 50px;
+            border: 1px solid #d1d5db;
+            border-radius: 11px;
+            padding: 0 16px 0 46px;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .search-form input[type="text"]:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.12);
+        }
+
+        .search-button {
+            height: 50px;
+            padding: 0 28px;
+            border: none;
+            border-radius: 11px;
+            background: var(--primary);
+            color: white;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .search-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        /* Product grid */
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .section-heading h2 {
+            font-size: 21px;
+            color: #123b31;
+        }
+
+        .section-heading span {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+            gap: 22px;
+        }
+
+        .product-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            overflow: hidden;
+            transition: transform 0.25s, box-shadow 0.25s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(15, 118, 110, 0.10);
+        }
+
+        .product-image-container {
+            height: 205px;
+            padding: 15px;
+            background: #f8faf9;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-bottom: 1px solid #edf0ee;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            mix-blend-mode: multiply;
+        }
+
+        .stock-badge {
+            position: absolute;
+            top: 13px;
+            right: 13px;
+            background: var(--success-bg);
+            color: var(--primary-dark);
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .stock-badge.low-stock {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .stock-badge.out-of-stock {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        .product-details {
+            padding: 19px;
+        }
+
+        .product-category {
+            display: inline-block;
+            background: #e8f7f1;
+            color: var(--primary-dark);
+            padding: 5px 9px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .product-name {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1f2937;
+            line-height: 1.4;
+            margin-bottom: 7px;
+            overflow-wrap: anywhere;
+        }
+
+        .product-brand {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 13px;
+        }
+
+        .product-price {
+            color: var(--primary-dark);
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 13px;
+        }
+
+        .product-description {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.6;
+            padding-top: 12px;
+            border-top: 1px solid #edf0ee;
+            overflow-wrap: anywhere;
+        }
+
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            font-size: 12px;
+        }
+
+        .product-meta strong {
+            color: #374151;
+        }
+
+        .expiry-date {
+            color: var(--muted);
+            text-align: right;
+        }
+
+        /* Empty state */
+
+        .empty-state {
+            background: var(--white);
+            border: 1px dashed #cbd5d1;
+            border-radius: 17px;
+            padding: 55px 20px;
+            text-align: center;
+            color: var(--muted);
+            grid-column: 1 / -1;
+        }
+
+        .empty-icon {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .empty-state h3 {
+            color: #123b31;
+            font-size: 19px;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .page-footer {
+            text-align: center;
+            padding: 35px 10px 0;
+            color: #9ca3af;
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+            .page-container {
+                padding: 25px 14px 35px;
+            }
+
+            .page-header h1 {
+                font-size: 25px;
+            }
+
+            .search-panel {
+                padding: 18px;
+            }
+
+            .search-form {
+                flex-direction: column;
+            }
+
+            .search-button {
+                width: 100%;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-heading {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+            .back-home-container {
+        margin-top: 30px;
+        text-align: center;
+    }
+
+    .back-home-btn {
+        display: inline-block;
+        padding: 12px 24px;
+        background: #059669;
+        color: #ffffff;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        border-radius: 10px;
+        transition: 0.3s ease;
+    }
+
+    .back-home-btn:hover {
+        background: #047857;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(5, 150, 105, 0.2);
+    }
+    </style>
 </head>
+
 <body>
 
     {% include 'staff_header.html' %}
 
-    <h2>Search Products</h2>
+    <main class="page-container">
 
-    <form action="" method="post">
+        <div class="back-home-container">
+            <a href="/staff_home" class="back-home-btn">
+                ← Back to Home
+            </a>
+        </div>
 
-        <table>
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h1>Search Products</h1>
+                <p>Find products and check their prices, stock, and expiry dates.</p>
+            </div>
 
-            <tr>
-                <th>Product Name</th>
+            <div class="product-count">
+                🛍️ Product Catalogue
+            </div>
+        </div>
 
-                <td>
-                    <input type="text" name="product_name" required>
-                </td>
+        <!-- Search Form -->
+        <section class="search-panel">
+            <h2>Find a Product</h2>
+            <p>Enter the product name to search the supermarket inventory.</p>
 
-                <td>
-                    <input type="submit" value="Search">
-                </td>
+            <form action="" method="post" class="search-form">
+                {% csrf_token %}
 
-            </tr>
+                <div class="search-input-wrapper">
+                    <span class="search-icon">⌕</span>
+                    <input type="text" name="product_name" placeholder="Enter product name..." aria-label="Product Name"
+                        required>
+                </div>
 
-        </table>
+                <button type="submit" class="search-button">
+                    🔍 Search Products
+                </button>
+            </form>
+        </section>
 
-    </form>
+        <!-- Products -->
+        <div class="section-heading">
+            <h2>Available Products</h2>
+            <span>Product details and inventory information</span>
+        </div>
 
+        <section class="product-grid">
 
-    <br><br>
+            {% for i in products %}
 
+            <article class="product-card">
 
-    <table border="1">
+                <div class="product-image-container">
 
-        <tr>
-            <th>Product Name</th>
-            <th>Category</th>
-            <th>Brand</th>
-            <th>Price</th>
-            <th>Stock</th>
-            <th>Description</th>
-            <th>Expiry Date</th>
-            <th>Image</th>
-        </tr>
+                    <img class="product-image" src="/static/own_reg_img/{{ i.image }}" alt="{{ i.product_name }}"
+                        loading="lazy">
 
-        {% for i in products %}
+                    {% if i.stock <= 0 %} <span class="stock-badge out-of-stock">Out of Stock</span>
+                        {% elif i.stock <= 5 %} <span class="stock-badge low-stock">Low Stock</span>
+                            {% else %}
+                            <span class="stock-badge">In Stock</span>
+                            {% endif %}
 
-        <tr>
+                </div>
 
-            <td>{{i.product_name}}</td>
-            <td>{{i.category.category_name}}</td>
-            <td>{{i.brand}}</td>
-            <td>{{i.price}}</td>
-            <td>{{i.stock}}</td>
-            <td>{{i.description}}</td>
-            <td>{{i.expiry_date}}</td>
+                <div class="product-details">
 
-            <td>
-                <img src="/static/own_reg_img/{{i.image}}" width="100" height="100">
-            </td>
+                    <span class="product-category">
+                        {{ i.category.category_name }}
+                    </span>
 
-        </tr>
+                    <h3 class="product-name">{{ i.product_name }}</h3>
 
-        {% endfor %}
+                    <p class="product-brand">
+                        Brand: {{ i.brand }}
+                    </p>
 
-    </table>
+                    <div class="product-price">
+                        ₹{{ i.price }}
+                    </div>
+
+                    <p class="product-description">
+                        {{ i.description|default:"No description available." }}
+                    </p>
+
+                    <div class="product-meta">
+                        <span>
+                            Stock: <strong>{{ i.stock }}</strong>
+                        </span>
+
+                        <span class="expiry-date">
+                            Expiry: <strong>{{ i.expiry_date|default:"N/A" }}</strong>
+                        </span>
+                    </div>
+
+                </div>
+
+            </article>
+
+            {% empty %}
+
+            <div class="empty-state">
+                <div class="empty-icon">🔎</div>
+                <h3>No Products Found</h3>
+                <p>
+                    No products are currently available to display.<br>
+                    Try searching with another product name.
+                </p>
+            </div>
+
+            {% endfor %}
+
+        </section>
+
+        <footer class="page-footer">
+            Supermarket Management System &bull; Staff Product Catalogue
+        </footer>
+
+    </main>
 
 </body>
+
 </html>

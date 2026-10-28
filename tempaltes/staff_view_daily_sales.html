@@ -4,129 +4,677 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Analysis</title>
+
+    <title>Sales Analysis | Supermarket</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --background: #f4f8f6;
+            --white: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        .page-container {
+            max-width: 1500px;
+            margin: auto;
+            padding: 35px 25px 50px;
+        }
+
+        /* Page Header */
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: -0.7px;
+            color: #123b31;
+        }
+
+        .page-header p {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+
+        .header-badge {
+            background: #d1fae5;
+            color: var(--primary-dark);
+            padding: 11px 17px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* Summary Heading */
+
+        .section-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .section-heading h2 {
+            font-size: 20px;
+            color: #123b31;
+            font-weight: 800;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        /* Summary Cards */
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 18px;
+            margin-bottom: 32px;
+        }
+
+        .summary-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 21px;
+            position: relative;
+            overflow: hidden;
+            transition: 0.25s ease;
+            box-shadow: 0 5px 18px rgba(15, 118, 110, 0.035);
+        }
+
+        .summary-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(15, 118, 110, 0.09);
+        }
+
+        .summary-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+        }
+
+        .summary-card.weekly::before {
+            background: #0f766e;
+        }
+
+        .summary-card.monthly::before {
+            background: #0284c7;
+        }
+
+        .summary-card.yearly::before {
+            background: #7c3aed;
+        }
+
+        .summary-card.total::before {
+            background: #d97706;
+        }
+
+        .summary-icon {
+            width: 43px;
+            height: 43px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #d1fae5;
+            border-radius: 12px;
+            font-size: 21px;
+            margin-bottom: 18px;
+        }
+
+        .weekly .summary-icon {
+            background: #ccfbf1;
+        }
+
+        .monthly .summary-icon {
+            background: #e0f2fe;
+        }
+
+        .yearly .summary-icon {
+            background: #ede9fe;
+        }
+
+        .total .summary-icon {
+            background: #fef3c7;
+        }
+
+        .summary-label {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 9px;
+        }
+
+        .summary-revenue {
+            font-size: 24px;
+            font-weight: 800;
+            color: #123b31;
+            overflow-wrap: anywhere;
+            margin-bottom: 8px;
+        }
+
+        .summary-bills {
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 17px;
+        }
+
+        .summary-bills strong {
+            color: #374151;
+        }
+
+        .view-link {
+            display: inline-block;
+            color: var(--primary-dark);
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .view-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Sales Details Panel */
+
+        .sales-panel {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(15, 118, 110, 0.04);
+        }
+
+        .sales-panel-header {
+            padding: 24px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sales-panel-header h2 {
+            font-size: 20px;
+            color: #123b31;
+            font-weight: 800;
+        }
+
+        .sales-panel-header p {
+            margin-top: 7px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .record-badge {
+            display: inline-block;
+            padding: 9px 13px;
+            border-radius: 9px;
+            background: #ecfdf5;
+            color: #047857;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 950px;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f0f7f3;
+        }
+
+        th {
+            padding: 17px 20px;
+            text-align: left;
+            color: #36584c;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 17px 20px;
+            border-bottom: 1px solid #edf0ee;
+            color: #4b5563;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        tbody tr {
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f7fcf9;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .bill-number {
+            color: #047857;
+            font-weight: 800;
+        }
+
+        .customer-name,
+        .product-name {
+            color: #1f2937;
+            font-weight: 600;
+        }
+
+        .amount {
+            color: #047857;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .payment-badge {
+            display: inline-block;
+            padding: 7px 11px;
+            background: #e0f2fe;
+            color: #0369a1;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .sales-date {
+            white-space: nowrap;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--muted);
+        }
+
+        .empty-icon {
+            font-size: 38px;
+            margin-bottom: 14px;
+        }
+
+        .empty-state h3 {
+            color: #123b31;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+
+        .page-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .footer-note {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .back-home-btn {
+            display: inline-block;
+            padding: 12px 22px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            transition: 0.25s ease;
+        }
+
+        .back-home-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(5, 150, 105, 0.18);
+        }
+
+        @media (max-width: 1200px) {
+            .summary-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 700px) {
+            .page-container {
+                padding: 25px 14px 35px;
+            }
+
+            .page-header h1 {
+                font-size: 25px;
+            }
+
+            .summary-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+            }
+
+            .summary-card {
+                padding: 16px;
+            }
+
+            .summary-revenue {
+                font-size: 20px;
+            }
+
+            .sales-panel-header {
+                padding: 20px;
+            }
+
+            .page-footer {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .back-home-btn {
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
     {% include 'staff_header.html' %}
 
-    <h2>Sales Analysis Dashboard</h2>
+    <main class="page-container">
 
-    <h3>Sales Summary</h3>
+        <!-- Page Header -->
+        <header class="page-header">
+            <div>
+                <h1>Sales Analysis Dashboard</h1>
+                <p>Monitor supermarket revenue, bills, and sales performance.</p>
+            </div>
 
-    <table border="1">
+            <div class="header-badge">
+                📊 Sales Analytics
+            </div>
+        </header>
 
-        <tr>
-            <th>Sales Period</th>
-            <th>Total Revenue (Rs.)</th>
-            <th>Number of Bills</th>
-            <th>View Details</th>
-        </tr>
+        <!-- Sales Summary -->
+        <div class="section-heading">
+            <h2>Sales Summary</h2>
+            <p>Revenue and bill count by period</p>
+        </div>
 
-        <tr>
-            <td>Daily Sales</td>
-            <td>{{today_total}}</td>
-            <td>{{today_count}}</td>
-            <td>
-                <a href="/staff_view_daily_sales?period=daily">
-                    View Daily Sales
+        <section class="summary-grid">
+
+            <!-- Daily Sales -->
+            <article class="summary-card">
+                <div class="summary-icon">📅</div>
+
+                <p class="summary-label">Daily Sales</p>
+
+                <div class="summary-revenue">
+                    ₹{{ today_total }}
+                </div>
+
+                <p class="summary-bills">
+                    Bills: <strong>{{ today_count }}</strong>
+                </p>
+
+                <a href="/staff_view_daily_sales?period=daily" class="view-link">
+                    View Daily Sales →
                 </a>
-            </td>
-        </tr>
+            </article>
 
-        <tr>
-            <td>Weekly Sales</td>
-            <td>{{weekly_total}}</td>
-            <td>{{weekly_count}}</td>
-            <td>
-                <a href="/staff_view_daily_sales?period=weekly">
-                    View Weekly Sales
+            <!-- Weekly Sales -->
+            <article class="summary-card weekly">
+                <div class="summary-icon">📈</div>
+
+                <p class="summary-label">Weekly Sales</p>
+
+                <div class="summary-revenue">
+                    ₹{{ weekly_total }}
+                </div>
+
+                <p class="summary-bills">
+                    Bills: <strong>{{ weekly_count }}</strong>
+                </p>
+
+                <a href="/staff_view_daily_sales?period=weekly" class="view-link">
+                    View Weekly Sales →
                 </a>
-            </td>
-        </tr>
+            </article>
 
-        <tr>
-            <td>Monthly Sales</td>
-            <td>{{monthly_total}}</td>
-            <td>{{monthly_count}}</td>
-            <td>
-                <a href="/staff_view_daily_sales?period=monthly">
-                    View Monthly Sales
+            <!-- Monthly Sales -->
+            <article class="summary-card monthly">
+                <div class="summary-icon">🗓️</div>
+
+                <p class="summary-label">Monthly Sales</p>
+
+                <div class="summary-revenue">
+                    ₹{{ monthly_total }}
+                </div>
+
+                <p class="summary-bills">
+                    Bills: <strong>{{ monthly_count }}</strong>
+                </p>
+
+                <a href="/staff_view_daily_sales?period=monthly" class="view-link">
+                    View Monthly Sales →
                 </a>
-            </td>
-        </tr>
+            </article>
 
-        <tr>
-            <td>Yearly Sales</td>
-            <td>{{yearly_total}}</td>
-            <td>{{yearly_count}}</td>
-            <td>
-                <a href="/staff_view_daily_sales?period=yearly">
-                    View Yearly Sales
+            <!-- Yearly Sales -->
+            <article class="summary-card yearly">
+                <div class="summary-icon">📊</div>
+
+                <p class="summary-label">Yearly Sales</p>
+
+                <div class="summary-revenue">
+                    ₹{{ yearly_total }}
+                </div>
+
+                <p class="summary-bills">
+                    Bills: <strong>{{ yearly_count }}</strong>
+                </p>
+
+                <a href="/staff_view_daily_sales?period=yearly" class="view-link">
+                    View Yearly Sales →
                 </a>
-            </td>
-        </tr>
+            </article>
 
-        <tr>
-            <td>Total Sales</td>
-            <td>{{total_sales}}</td>
-            <td>{{total_count}}</td>
-            <td>
-                <a href="/staff_view_daily_sales?period=total">
-                    View All Sales
+            <!-- Total Sales -->
+            <article class="summary-card total">
+                <div class="summary-icon">💰</div>
+
+                <p class="summary-label">Total Sales</p>
+
+                <div class="summary-revenue">
+                    ₹{{ total_sales }}
+                </div>
+
+                <p class="summary-bills">
+                    Bills: <strong>{{ total_count }}</strong>
+                </p>
+
+                <a href="/staff_view_daily_sales?period=total" class="view-link">
+                    View All Sales →
                 </a>
-            </td>
-        </tr>
+            </article>
 
-    </table>
+        </section>
 
-    <br>
+        <!-- Sales Details -->
+        <section class="sales-panel">
 
-    <h3>
-        {% if period == 'daily' %}
-            Today's Sales Details
-        {% elif period == 'weekly' %}
-            This Week's Sales Details
-        {% elif period == 'monthly' %}
-            This Month's Sales Details
-        {% elif period == 'yearly' %}
-            This Year's Sales Details
-        {% else %}
-            All Sales Details
-        {% endif %}
-    </h3>
+            <div class="sales-panel-header">
+                <div>
+                    <h2>
+                        {% if period == 'daily' %}
+                            Today's Sales Details
+                        {% elif period == 'weekly' %}
+                            This Week's Sales Details
+                        {% elif period == 'monthly' %}
+                            This Month's Sales Details
+                        {% elif period == 'yearly' %}
+                            This Year's Sales Details
+                        {% else %}
+                            All Sales Details
+                        {% endif %}
+                    </h2>
 
-    <table border="1">
+                    <p>Detailed transaction records for the selected period.</p>
+                </div>
 
-        <tr>
-            <th>Bill Number</th>
-            <th>Customer Name</th>
-            <th>Product Name</th>
-            <th>Total Amount</th>
-            <th>Payment Mode</th>
-            <th>Sales Date</th>
-        </tr>
+                <span class="record-badge">
+                    🧾 Transaction Details
+                </span>
+            </div>
 
-        {% for i in data %}
+            <div class="table-responsive">
 
-        <tr>
-            <td>{{i.bill_number}}</td>
-            <td>{{i.customer.customer_name}}</td>
-            <td>{{i.product.product_name}}</td>
-            <td>{{i.total_amount}}</td>
-            <td>{{i.payment_mode}}</td>
-            <td>{{i.sales_date}}</td>
-        </tr>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Bill Number</th>
+                            <th>Customer Name</th>
+                            <th>Product Name</th>
+                            <th>Total Amount</th>
+                            <th>Payment Mode</th>
+                            <th>Sales Date</th>
+                        </tr>
+                    </thead>
 
-        {% empty %}
+                    <tbody>
 
-        <tr>
-            <td colspan="6">No Sales Found</td>
-        </tr>
+                        {% for i in data %}
 
-        {% endfor %}
+                        <tr>
+                            <td>
+                                <span class="bill-number">
+                                    #{{ i.bill_number }}
+                                </span>
+                            </td>
 
-    </table>
+                            <td>
+                                <span class="customer-name">
+                                    {{ i.customer.customer_name }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="product-name">
+                                    {{ i.product.product_name }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="amount">
+                                    ₹{{ i.total_amount }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="payment-badge">
+                                    {{ i.payment_mode }}
+                                </span>
+                            </td>
+
+                            <td class="sales-date">
+                                {{ i.sales_date }}
+                            </td>
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <div class="empty-icon">📊</div>
+                                    <h3>No Sales Found</h3>
+                                    <p>
+                                        There are no sales records for the selected period.
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+
+            </div>
+
+        </section>
+
+        <!-- Footer -->
+        <footer class="page-footer">
+            <p class="footer-note">
+                Sales figures are displayed using the values supplied by your Django view.
+            </p>
+
+            <a href="/staff_home" class="back-home-btn">
+                ← Back to Home
+            </a>
+        </footer>
+
+    </main>
 
 </body>
 </html>

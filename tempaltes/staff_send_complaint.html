@@ -3,43 +3,523 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Staff Complaints | Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --primary-light: #d1fae5;
+            --background: #f3f7f5;
+            --white: #ffffff;
+            --text: #172b25;
+            --muted: #718078;
+            --border: #e2ebe6;
+            --shadow: 0 8px 28px rgba(20, 65, 47, 0.07);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .topbar {
+            background: linear-gradient(120deg, #064e3b, #047857);
+            color: white;
+            padding: 22px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            box-shadow: 0 5px 20px rgba(4, 120, 87, 0.16);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.15);
+            display: grid;
+            place-items: center;
+            font-size: 25px;
+        }
+
+        .brand h1 {
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .brand p {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #d1fae5;
+        }
+
+        .home-btn {
+            background: white;
+            color: #065f46;
+            text-decoration: none;
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .home-btn:hover {
+            background: #d1fae5;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1150px;
+            width: 92%;
+            margin: 35px auto;
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
+        }
+
+        .page-heading h2 {
+            font-size: 29px;
+            font-weight: 800;
+            letter-spacing: -0.8px;
+        }
+
+        .page-heading p {
+            margin-top: 9px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 0.9fr 1.5fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 22px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .card-header h3 {
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .card-header p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 7px;
+            line-height: 1.6;
+        }
+
+        .form-body {
+            padding: 24px;
+        }
+
+        .form-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 15px;
+            background: var(--primary-light);
+            display: grid;
+            place-items: center;
+            font-size: 27px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 9px;
+            color: #34483d;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .form-group textarea {
+            display: block;
+            width: 100%;
+            min-height: 190px;
+            resize: vertical;
+            padding: 14px;
+            border: 1px solid #dce7e0;
+            border-radius: 11px;
+            outline: none;
+            background: #fbfdfc;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 13px;
+            line-height: 1.7;
+            transition: 0.2s;
+        }
+
+        .form-group textarea:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+        }
+
+        .form-group textarea::placeholder {
+            color: #a0ada5;
+        }
+
+        .form-note {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+
+        .submit-btn {
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            padding: 14px 18px;
+            background: linear-gradient(120deg, #059669, #047857);
+            color: white;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 16px rgba(5, 150, 105, 0.2);
+        }
+
+        .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .history-count {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 7px 11px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .history-body {
+            padding: 8px 24px 20px;
+        }
+
+        .complaint-item {
+            position: relative;
+            padding: 22px 0;
+            border-bottom: 1px solid #edf2ef;
+        }
+
+        .complaint-item:last-child {
+            border-bottom: none;
+        }
+
+        .complaint-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 13px;
+        }
+
+        .complaint-number {
+            color: var(--primary-dark);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .complaint-date {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .complaint-label {
+            display: block;
+            color: #64756b;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+            margin-bottom: 7px;
+        }
+
+        .complaint-text {
+            color: #34483d;
+            font-size: 13px;
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+        }
+
+        .reply-box {
+            margin-top: 16px;
+            padding: 14px 16px;
+            border-radius: 10px;
+            background: #f4faf6;
+            border: 1px solid #e0f1e6;
+        }
+
+        .reply-box .complaint-label {
+            color: #047857;
+        }
+
+        .reply-box.pending {
+            background: #fffaf0;
+            border-color: #f5e7c2;
+        }
+
+        .reply-box.pending .complaint-label {
+            color: #946200;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 45px 15px;
+        }
+
+        .empty-icon {
+            font-size: 40px;
+            margin-bottom: 13px;
+        }
+
+        .empty-state h4 {
+            color: #34483d;
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .footer {
+            padding: 25px 15px;
+            text-align: center;
+            color: #829188;
+            font-size: 12px;
+        }
+
+        @media (max-width: 850px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .topbar {
+                padding: 18px 5%;
+            }
+
+            .brand h1 {
+                font-size: 17px;
+            }
+
+            .container {
+                width: 94%;
+                margin: 25px auto;
+            }
+
+            .page-heading h2 {
+                font-size: 24px;
+            }
+
+            .card-header,
+            .form-body {
+                padding: 19px;
+            }
+
+            .history-body {
+                padding-left: 19px;
+                padding-right: 19px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-     {% include 'staff_header.html' %}
 
-    <form action="" method="post">
-        <table>
+    {% include 'staff_header.html' %}
 
-            <tr>
-                <th>Complaint</th>
-                <td><textarea name="complaint" id="" cols="30" rows="10"></textarea></td>
-                
-            </tr>
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon">💬</div>
+            <div>
+                <h1>Staff Support Center</h1>
+                <p>Complaint Management Dashboard</p>
+            </div>
+        </div>
 
-            <tr>
-                <td><input type="submit" value="Send Complaint"></td>
-            </tr>
-        </table>
-    </form>
-    
+        <a href="/staff_home" class="home-btn">← Back to Home</a>
+    </header>
 
-    <table border="1">
-        <tr>
-            <th>Complaint</th>
-            <th>Date</th>
-            <th>Reply</th>
-        </tr>
-        {% for i in comp %}
-        <tr>
-            <td>{{i.complaint}}</td>
-            <td>{{i.date}}</td>
-            <td>{{i.reply}}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <main class="container">
 
-    
+        <section class="page-heading">
+            <h2>Complaints & Support</h2>
+            <p>
+                Submit your concerns to the management team and check replies
+                to your previous complaints.
+            </p>
+        </section>
+
+        <div class="content-grid">
+
+            <!-- Submit Complaint -->
+            <section class="card">
+
+                <div class="card-header">
+                    <h3>✉️ Send a Complaint</h3>
+                    <p>Describe your issue clearly so the management team can assist you.</p>
+                </div>
+
+                <div class="form-body">
+
+                    <div class="form-icon">📝</div>
+
+                    <form action="" method="post">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="complaint">Complaint Details</label>
+
+                            <textarea
+                                name="complaint"
+                                id="complaint"
+                                placeholder="Write your complaint or concern here..."
+                                required
+                                maxlength="2000"
+                            ></textarea>
+
+                            <p class="form-note">
+                                Please provide enough information to help us understand your concern.
+                            </p>
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            Send Complaint &nbsp; →
+                        </button>
+                    </form>
+
+                </div>
+            </section>
+
+            <!-- Complaint History -->
+            <section class="card">
+
+                <div class="card-header history-header">
+                    <div>
+                        <h3>📋 Complaint History</h3>
+                        <p>Review your submitted complaints and management replies.</p>
+                    </div>
+
+                    <span class="history-count">
+                        {% for i in comp %}{% endfor %}
+                        Your Records
+                    </span>
+                </div>
+
+                <div class="history-body">
+
+                    {% for i in comp %}
+
+                        <article class="complaint-item">
+
+                            <div class="complaint-top">
+                                <span class="complaint-number">
+                                    Complaint #{{ forloop.counter }}
+                                </span>
+
+                                <span class="complaint-date">
+                                    📅 {{ i.date }}
+                                </span>
+                            </div>
+
+                            <span class="complaint-label">Your Complaint</span>
+
+                            <div class="complaint-text">{{ i.complaint }}</div>
+
+                            {% if i.reply == 'pending' %}
+                                <div class="reply-box pending">
+                                    <span class="complaint-label">Management Reply</span>
+                                    <div class="complaint-text">
+                                        ⏳ Awaiting a response from management.
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="reply-box">
+                                    <span class="complaint-label">Management Reply</span>
+                                    <div class="complaint-text">{{ i.reply }}</div>
+                                </div>
+                            {% endif %}
+
+                        </article>
+
+                    {% empty %}
+
+                        <div class="empty-state">
+                            <div class="empty-icon">📭</div>
+                            <h4>No Complaints Yet</h4>
+                            <p>
+                                You haven't submitted any complaints yet.
+                                Use the form to send your first complaint.
+                            </p>
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+            </section>
+
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        Staff Support Center · Complaint Management
+    </footer>
 
 </body>
 </html>

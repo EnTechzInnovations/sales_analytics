@@ -3,13 +3,1037 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-{% include 'staff_header.html' %}
+    <title>Staff Dashboard | Sales Analytics</title>
 
-    <h1>Staff Home page</h1>
-  
-    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #14b8a6;
+            --background: #f3f7f6;
+            --sidebar: #102a2a;
+            --sidebar-hover: #1d4140;
+            --text-dark: #163331;
+            --text-light: #d1e7e3;
+            --white: #ffffff;
+            --border: #e1ece8;
+            --muted: #78908a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--text-dark);
+        }
+
+        /* Top header */
+        .top-header {
+            height: 76px;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 3px 15px rgba(16, 42, 42, 0.04);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 13px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 23px;
+            font-weight: 800;
+            box-shadow: 0 5px 12px rgba(16, 185, 129, 0.2);
+        }
+
+        .brand-name {
+            font-size: 19px;
+            font-weight: 800;
+            color: var(--text-dark);
+        }
+
+        .brand-subtitle {
+            font-size: 10px;
+            color: var(--muted);
+            margin-top: 4px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .staff-label {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            background: #e8f8f2;
+            color: #047857;
+            border: 1px solid #c9f0e1;
+            border-radius: 30px;
+            padding: 10px 16px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: var(--sidebar);
+            color: white;
+            border: none;
+            border-radius: 9px;
+            width: 42px;
+            height: 42px;
+            font-size: 23px;
+            cursor: pointer;
+        }
+
+        /* Dashboard layout */
+        .dashboard-layout {
+            display: flex;
+            min-height: calc(100vh - 76px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            flex-shrink: 0;
+            background: var(--sidebar);
+            padding: 28px 16px;
+        }
+
+        .menu-heading {
+            padding: 0 14px;
+            margin-bottom: 17px;
+            color: #739b94;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+        }
+
+        .nav-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 13px 14px;
+            border-radius: 10px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: background 0.25s, color 0.25s, transform 0.25s;
+            border: 1px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: var(--sidebar-hover);
+            color: white;
+            transform: translateX(3px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(100deg, #10b981, #0d9488);
+            color: white;
+            font-weight: 700;
+        }
+
+        .nav-icon {
+            width: 23px;
+            flex-shrink: 0;
+            text-align: center;
+            font-size: 17px;
+        }
+
+        .nav-divider {
+            height: 1px;
+            background: rgba(209, 231, 227, 0.1);
+            margin: 16px 8px;
+        }
+
+        .logout-link {
+            color: #fda4af;
+        }
+
+        .logout-link:hover {
+            background: rgba(244, 63, 94, 0.12);
+            color: #fecdd3;
+        }
+
+        /* Main content */
+        .main-content {
+            flex: 1;
+            min-width: 0;
+            padding: 30px;
+        }
+
+        .page-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .page-heading h1 {
+            font-size: 25px;
+            font-weight: 800;
+            letter-spacing: -0.7px;
+        }
+
+        .page-heading p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 7px;
+        }
+
+        .date-label {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: #55716a;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Welcome and chart columns */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(300px, 0.88fr);
+            gap: 22px;
+            align-items: stretch;
+        }
+
+        .welcome-banner {
+            background: linear-gradient(125deg, #064e3b, #0f766e, #0d9488);
+            padding: 28px;
+            border-radius: 18px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(15, 118, 110, 0.12);
+            min-height: 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .welcome-banner::after {
+            content: "";
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            border: 30px solid rgba(255, 255, 255, 0.06);
+            border-radius: 50%;
+            right: -65px;
+            top: -80px;
+        }
+
+        .welcome-tag {
+            display: inline-block;
+            width: fit-content;
+            padding: 7px 11px;
+            border-radius: 30px;
+            background: rgba(255, 255, 255, 0.12);
+            color: #d1fae5;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-banner h2 {
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1.4;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-banner p {
+            font-size: 13px;
+            line-height: 1.9;
+            color: #d1fae5;
+            max-width: 450px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 23px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-btn {
+            display: inline-block;
+            text-decoration: none;
+            background: white;
+            color: #047857;
+            padding: 11px 15px;
+            border-radius: 9px;
+            font-size: 11px;
+            font-weight: 800;
+            transition: 0.2s;
+        }
+
+        .welcome-btn:hover {
+            transform: translateY(-2px);
+            background: #d1fae5;
+        }
+
+        .welcome-btn.secondary {
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: white;
+        }
+
+        /* Right-side sales chart */
+        .chart-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 23px;
+            box-shadow: 0 8px 24px rgba(16, 42, 42, 0.04);
+            min-width: 0;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 17px;
+        }
+
+        .chart-header h3 {
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .chart-header p {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 6px;
+        }
+
+        .chart-icon {
+            width: 37px;
+            height: 37px;
+            border-radius: 11px;
+            display: grid;
+            place-items: center;
+            background: #d1fae5;
+            font-size: 18px;
+        }
+
+        .chart-summary {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 19px;
+        }
+
+        .chart-total-label {
+            color: var(--muted);
+            font-size: 10px;
+            margin-bottom: 6px;
+        }
+
+        .chart-total {
+            color: #123b30;
+            font-size: 25px;
+            font-weight: 800;
+            letter-spacing: -0.7px;
+        }
+
+        .demo-badge {
+            background: #fff7df;
+            color: #946200;
+            border-radius: 7px;
+            padding: 6px 8px;
+            font-size: 9px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .bar-chart {
+            height: 155px;
+            display: flex;
+            align-items: stretch;
+            gap: 13px;
+            padding: 8px 3px 0;
+            border-bottom: 1px solid #eaf1ed;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent 0,
+                transparent 37px,
+                #edf3ef 38px,
+                transparent 39px
+            );
+        }
+
+        .bar-column {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .bar-value {
+            font-size: 9px;
+            color: #658078;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .bar-track {
+            height: 112px;
+            width: 100%;
+            max-width: 34px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .bar {
+            width: 100%;
+            height: var(--bar-height);
+            min-height: 5px;
+            border-radius: 7px 7px 2px 2px;
+            background: linear-gradient(180deg, #34d399, #059669);
+            transition: height 0.5s ease, filter 0.2s;
+            position: relative;
+        }
+
+        .bar:hover {
+            filter: brightness(0.92);
+        }
+
+        .bar.highlight {
+            background: linear-gradient(180deg, #2dd4bf, #0f766e);
+        }
+
+        .bar-label {
+            color: #7b918a;
+            font-size: 10px;
+            font-weight: 600;
+            padding-bottom: 10px;
+        }
+
+        .chart-footer {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+            margin-top: 17px;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .chart-legend {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 3px;
+            background: #059669;
+        }
+
+        .chart-link {
+            color: #047857;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .chart-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Quick access cards */
+        .section-heading {
+            margin: 28px 0 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-heading h3 {
+            font-size: 16px;
+            font-weight: 800;
+        }
+
+        .section-heading span {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .quick-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 19px;
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: 0.2s;
+            min-width: 0;
+        }
+
+        .quick-card:hover {
+            transform: translateY(-3px);
+            border-color: #9ce6c9;
+            box-shadow: 0 8px 20px rgba(16, 42, 42, 0.06);
+        }
+
+        .quick-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            font-size: 20px;
+            margin-bottom: 15px;
+        }
+
+        .icon-green { background: #d1fae5; }
+        .icon-blue { background: #dbeafe; }
+        .icon-orange { background: #ffedd5; }
+        .icon-purple { background: #ede9fe; }
+        .icon-teal { background: #ccfbf1; }
+        .icon-pink { background: #fce7f3; }
+
+        .quick-card h4 {
+            font-size: 13px;
+            font-weight: 800;
+            margin-bottom: 7px;
+        }
+
+        .quick-card p {
+            font-size: 11px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .quick-arrow {
+            display: block;
+            text-align: right;
+            color: #059669;
+            font-size: 17px;
+            margin-top: 12px;
+        }
+
+        .footer {
+            text-align: center;
+            color: #8aa099;
+            font-size: 10px;
+            padding: 28px 10px 5px;
+        }
+
+        @media (max-width: 1150px) {
+            .main-content {
+                padding: 24px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: minmax(0, 1fr) minmax(270px, 0.85fr);
+                gap: 16px;
+            }
+
+            .welcome-banner {
+                padding: 23px;
+            }
+
+            .chart-card {
+                padding: 19px;
+            }
+
+            .quick-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 900px) {
+            .top-header {
+                padding: 0 20px;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .dashboard-layout {
+                display: block;
+            }
+
+            .sidebar {
+                display: none;
+                width: 100%;
+                padding: 20px;
+            }
+
+            .sidebar.open {
+                display: block;
+            }
+
+            .nav-menu {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .welcome-banner {
+                min-height: 240px;
+            }
+
+            .chart-card {
+                width: 100%;
+            }
+
+            .bar-chart {
+                height: 170px;
+            }
+
+            .bar-track {
+                height: 125px;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .top-header {
+                height: 68px;
+                padding: 0 14px;
+            }
+
+            .brand-icon {
+                width: 39px;
+                height: 39px;
+                font-size: 20px;
+            }
+
+            .brand-name {
+                font-size: 16px;
+            }
+
+            .brand-subtitle {
+                font-size: 9px;
+            }
+
+            .staff-label {
+                display: none;
+            }
+
+            .sidebar {
+                padding: 16px 12px;
+            }
+
+            .nav-menu {
+                grid-template-columns: 1fr;
+            }
+
+            .main-content {
+                padding: 20px 14px;
+            }
+
+            .page-heading h1 {
+                font-size: 22px;
+            }
+
+            .welcome-banner {
+                padding: 22px;
+            }
+
+            .welcome-banner h2 {
+                font-size: 23px;
+            }
+
+            .quick-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-card {
+                padding: 16px;
+            }
+
+            .quick-icon {
+                margin-bottom: 10px;
+            }
+
+            .chart-total {
+                font-size: 22px;
+            }
+
+            .bar-chart {
+                gap: 8px;
+            }
+
+            .bar-value {
+                font-size: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Header -->
+    <header class="top-header">
+        <div class="brand">
+            <div class="brand-icon">S</div>
+            <div>
+                <div class="brand-name">Sales Analytics</div>
+                <div class="brand-subtitle">Staff Workspace</div>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="staff-label">
+                <span class="status-dot"></span>
+                STAFF PORTAL
+            </div>
+
+            <button
+                class="menu-toggle"
+                id="menuToggle"
+                type="button"
+                aria-label="Toggle navigation menu"
+                aria-expanded="false"
+                aria-controls="staffSidebar"
+                onclick="toggleMenu()">☰</button>
+        </div>
+    </header>
+
+    <div class="dashboard-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="staffSidebar">
+            <div class="menu-heading">Main Menu</div>
+
+            <nav class="nav-menu">
+                <a href="/staff_home" class="nav-link">
+                    <span class="nav-icon">⌂</span>
+                    <span>Home</span>
+                </a>
+
+                <a href="/staff_view_profile" class="nav-link">
+                    <span class="nav-icon">👤</span>
+                    <span>View Profile</span>
+                </a>
+
+                <a href="/staff_record_sales" class="nav-link">
+                    <span class="nav-icon">💰</span>
+                    <span>Record Sales</span>
+                </a>
+
+                <a href="/staff_search_products" class="nav-link">
+                    <span class="nav-icon">📦</span>
+                    <span>View Products</span>
+                </a>
+
+                <a href="/staff_manage_customers" class="nav-link">
+                    <span class="nav-icon">👥</span>
+                    <span>Manage Customers</span>
+                </a>
+
+                <a href="/staff_view_daily_sales" class="nav-link">
+                    <span class="nav-icon">📊</span>
+                    <span>Daily Sales</span>
+                </a>
+
+                <a href="/staff_view_takeaway_bookings" class="nav-link">
+                    <span class="nav-icon">🛍️</span>
+                    <span>Takeaway Bookings</span>
+                </a>
+
+                <a href="/staff_send_complaint" class="nav-link">
+                    <span class="nav-icon">💬</span>
+                    <span>Send Complaint</span>
+                </a>
+
+                <div class="nav-divider"></div>
+
+                <a href="/" class="nav-link logout-link">
+                    <span class="nav-icon">↪</span>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Dashboard -->
+        <main class="main-content">
+
+            <div class="page-heading">
+                <div>
+                    <h1>Staff Dashboard 👋</h1>
+                    <p>Manage your supermarket activities and monitor sales performance.</p>
+                </div>
+
+                <div class="date-label">📈 Sales Overview</div>
+            </div>
+
+            <!-- Welcome LEFT + Sales Chart RIGHT -->
+            <section class="dashboard-grid">
+
+                <div class="welcome-banner">
+                    <span class="welcome-tag">STAFF WORKSPACE</span>
+
+                    <h2>Welcome to Your Staff Workspace</h2>
+
+                    <p>
+                        Manage sales, explore products, assist customers and review
+                        your supermarket's performance from one convenient dashboard.
+                    </p>
+
+                    <div class="welcome-actions">
+                        <a href="/staff_record_sales" class="welcome-btn">
+                            + Record New Sale
+                        </a>
+
+                        <a href="/staff_view_daily_sales" class="welcome-btn secondary">
+                            View Sales Report →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right-side sales bar chart: demo figures -->
+                <section class="chart-card">
+                    <div class="chart-header">
+                        <div>
+                            <h3>Sales Performance</h3>
+                            <p>Weekly sales overview</p>
+                        </div>
+                        <div class="chart-icon">📊</div>
+                    </div>
+
+                    <div class="chart-summary">
+                        <div>
+                            <div class="chart-total-label">Demo weekly sales</div>
+                            <div class="chart-total">₹45,800</div>
+                        </div>
+                        <span class="demo-badge">DEMO DATA</span>
+                    </div>
+
+                    <div class="bar-chart" aria-label="Demo weekly sales bar chart">
+                        <div class="bar-column">
+                            <span class="bar-value">₹4.2k</span>
+                            <div class="bar-track">
+                                <div class="bar" style="--bar-height: 38%;"></div>
+                            </div>
+                            <span class="bar-label">Mon</span>
+                        </div>
+
+                        <div class="bar-column">
+                            <span class="bar-value">₹6.8k</span>
+                            <div class="bar-track">
+                                <div class="bar" style="--bar-height: 61%;"></div>
+                            </div>
+                            <span class="bar-label">Tue</span>
+                        </div>
+
+                        <div class="bar-column">
+                            <span class="bar-value">₹5.5k</span>
+                            <div class="bar-track">
+                                <div class="bar" style="--bar-height: 49%;"></div>
+                            </div>
+                            <span class="bar-label">Wed</span>
+                        </div>
+
+                        <div class="bar-column">
+                            <span class="bar-value">₹8.2k</span>
+                            <div class="bar-track">
+                                <div class="bar" style="--bar-height: 74%;"></div>
+                            </div>
+                            <span class="bar-label">Thu</span>
+                        </div>
+
+                        <div class="bar-column">
+                            <span class="bar-value">₹7.1k</span>
+                            <div class="bar-track">
+                                <div class="bar" style="--bar-height: 64%;"></div>
+                            </div>
+                            <span class="bar-label">Fri</span>
+                        </div>
+
+                        <div class="bar-column">
+                            <span class="bar-value">₹9.4k</span>
+                            <div class="bar-track">
+                                <div class="bar highlight" style="--bar-height: 85%;"></div>
+                            </div>
+                            <span class="bar-label">Sat</span>
+                        </div>
+
+                        <div class="bar-column">
+                            <span class="bar-value">₹4.6k</span>
+                            <div class="bar-track">
+                                <div class="bar" style="--bar-height: 41%;"></div>
+                            </div>
+                            <span class="bar-label">Sun</span>
+                        </div>
+                    </div>
+
+                    <div class="chart-footer">
+                        <div class="chart-legend">
+                            <span class="legend-dot"></span>
+                            <span>Sales amount by day</span>
+                        </div>
+
+                        <a href="/staff_view_daily_sales" class="chart-link">
+                            Full Report →
+                        </a>
+                    </div>
+                </section>
+
+            </section>
+
+            <!-- Quick access -->
+            <div class="section-heading">
+                <h3>Quick Access</h3>
+                <span>Choose an action to get started</span>
+            </div>
+
+            <section class="quick-grid">
+
+                <a href="/staff_record_sales" class="quick-card">
+                    <div class="quick-icon icon-green">💰</div>
+                    <h4>Record Sales</h4>
+                    <p>Create a new sales transaction and record customer purchases.</p>
+                    <span class="quick-arrow">↗</span>
+                </a>
+
+                <a href="/staff_search_products" class="quick-card">
+                    <div class="quick-icon icon-blue">📦</div>
+                    <h4>View Products</h4>
+                    <p>Search for products and check their prices and stock details.</p>
+                    <span class="quick-arrow">↗</span>
+                </a>
+
+                <a href="/staff_manage_customers" class="quick-card">
+                    <div class="quick-icon icon-purple">👥</div>
+                    <h4>Manage Customers</h4>
+                    <p>View customer information and purchase history.</p>
+                    <span class="quick-arrow">↗</span>
+                </a>
+
+                <a href="/staff_view_daily_sales" class="quick-card">
+                    <div class="quick-icon icon-orange">📈</div>
+                    <h4>Sales Reports</h4>
+                    <p>Review daily, weekly, monthly and yearly sales records.</p>
+                    <span class="quick-arrow">↗</span>
+                </a>
+
+                <a href="/staff_view_takeaway_bookings" class="quick-card">
+                    <div class="quick-icon icon-teal">🛍️</div>
+                    <h4>Takeaway Bookings</h4>
+                    <p>Review takeaway orders and manage booking payment status.</p>
+                    <span class="quick-arrow">↗</span>
+                </a>
+
+                <a href="/staff_send_complaint" class="quick-card">
+                    <div class="quick-icon icon-pink">💬</div>
+                    <h4>Send Complaint</h4>
+                    <p>Send a concern to management and review their replies.</p>
+                    <span class="quick-arrow">↗</span>
+                </a>
+
+            </section>
+
+            <footer class="footer">
+                Sales Analytics · Staff Workspace
+            </footer>
+
+        </main>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const sidebar = document.getElementById("staffSidebar");
+            const button = document.getElementById("menuToggle");
+
+            sidebar.classList.toggle("open");
+
+            const isExpanded = sidebar.classList.contains("open");
+            button.setAttribute("aria-expanded", isExpanded);
+        }
+
+        // Highlight the current navigation link.
+        const currentPath =
+            window.location.pathname.replace(/\/+$/, "") || "/";
+
+        document.querySelectorAll(".nav-link").forEach(function(link) {
+            const linkPath =
+                new URL(link.href).pathname.replace(/\/+$/, "") || "/";
+
+            if (linkPath === currentPath) {
+                link.classList.add("active");
+                link.setAttribute("aria-current", "page");
+            }
+        });
+    </script>
+
 </body>
 </html>

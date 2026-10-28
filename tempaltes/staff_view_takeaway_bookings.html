@@ -3,83 +3,647 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Takeaway Bookings</title>
+    <title>Takeaway Bookings | Staff Dashboard</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --primary-light: #d1fae5;
+            --background: #f3f7f5;
+            --white: #ffffff;
+            --text: #172b25;
+            --muted: #718078;
+            --border: #e2ebe6;
+            --paid-bg: #d1fae5;
+            --paid-text: #047857;
+            --pending-bg: #fff3cd;
+            --pending-text: #946200;
+            --shadow: 0 8px 28px rgba(20, 65, 47, 0.07);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .topbar {
+            background: linear-gradient(120deg, #064e3b, #047857);
+            color: white;
+            padding: 23px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            box-shadow: 0 5px 20px rgba(4, 120, 87, 0.16);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.15);
+            font-size: 25px;
+        }
+
+        .brand h1 {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .brand p {
+            margin-top: 5px;
+            font-size: 12px;
+            color: #d1fae5;
+        }
+
+        .home-btn {
+            text-decoration: none;
+            color: #065f46;
+            background: white;
+            padding: 12px 19px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+
+        .home-btn:hover {
+            background: #d1fae5;
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1600px;
+            width: 92%;
+            margin: 32px auto;
+        }
+
+        .page-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .page-heading h2 {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.8px;
+        }
+
+        .page-heading p {
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .booking-count {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .summary-card {
+            background: linear-gradient(120deg, #059669, #10b981);
+            color: white;
+            padding: 23px 25px;
+            border-radius: 17px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .summary-card h3 {
+            font-size: 13px;
+            font-weight: 500;
+            color: #d1fae5;
+            margin-bottom: 9px;
+        }
+
+        .summary-card .amount {
+            font-size: 29px;
+            font-weight: 800;
+            letter-spacing: -0.8px;
+        }
+
+        .summary-icon {
+            font-size: 36px;
+            opacity: 0.85;
+        }
+
+        .table-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 22px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .table-header h3 {
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .search-box {
+            width: 310px;
+            max-width: 100%;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            outline: none;
+            background: #f8fbf9;
+            font-family: inherit;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 1400px;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        thead {
+            background: #f7faf8;
+        }
+
+        th {
+            padding: 16px 18px;
+            color: #64756b;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            white-space: nowrap;
+            border-bottom: 1px solid var(--border);
+        }
+
+        td {
+            padding: 17px 18px;
+            border-bottom: 1px solid #edf2ef;
+            font-size: 12px;
+            color: #47574e;
+            vertical-align: middle;
+        }
+
+        tbody tr {
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f7fcf9;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .product-name {
+            color: #172b25;
+            font-weight: 700;
+            min-width: 130px;
+        }
+
+        .price {
+            font-weight: 700;
+            color: #37483e;
+            white-space: nowrap;
+        }
+
+        .customer-name {
+            color: #172b25;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .contact {
+            white-space: nowrap;
+        }
+
+        .quantity {
+            display: inline-block;
+            background: #ecfdf5;
+            color: #047857;
+            padding: 6px 10px;
+            border-radius: 7px;
+            font-weight: 800;
+        }
+
+        .total-amount {
+            color: #047857;
+            font-size: 13px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .payment-mode {
+            display: inline-block;
+            padding: 6px 9px;
+            background: #f1f5f9;
+            color: #475569;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 11px;
+            border-radius: 30px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: capitalize;
+            white-space: nowrap;
+        }
+
+        .status.paid {
+            color: var(--paid-text);
+            background: var(--paid-bg);
+        }
+
+        .status.pending {
+            color: var(--pending-text);
+            background: var(--pending-bg);
+        }
+
+        .status.other {
+            color: #475569;
+            background: #e2e8f0;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        .update-btn {
+            display: inline-block;
+            text-decoration: none;
+            background: var(--primary);
+            color: white;
+            padding: 10px 13px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
+            transition: 0.2s;
+        }
+
+        .update-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+        }
+
+        .paid-label {
+            color: #047857;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .empty-state {
+            padding: 55px 20px !important;
+            text-align: center;
+        }
+
+        .empty-icon {
+            display: block;
+            font-size: 38px;
+            margin-bottom: 12px;
+        }
+
+        .empty-state strong {
+            display: block;
+            color: #34483d;
+            font-size: 16px;
+            margin-bottom: 7px;
+        }
+
+        .empty-state span {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .no-results {
+            display: none;
+            text-align: center;
+            padding: 35px 20px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 25px 15px;
+            color: #829188;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .topbar {
+                padding: 18px 5%;
+            }
+
+            .brand h1 {
+                font-size: 18px;
+            }
+
+            .container {
+                width: 94%;
+                margin: 24px auto;
+            }
+
+            .page-heading h2 {
+                font-size: 23px;
+            }
+
+            .summary-card {
+                padding: 20px;
+            }
+
+            .summary-card .amount {
+                font-size: 25px;
+            }
+
+            .table-header {
+                padding: 18px;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
     {% include 'staff_header.html' %}
 
-    <h2>Takeaway Product Bookings</h2>
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon">🛍️</div>
+            <div>
+                <h1>Takeaway Management</h1>
+                <p>Staff Dashboard / Booking Management</p>
+            </div>
+        </div>
 
-    <table border="1">
+        <a href="/staff_home" class="home-btn">← Back to Home</a>
+    </header>
 
-        <tr>
-            <th>Product Name</th>
-            <th>Price</th>
-            <th>Customer Name</th>
-            <th>Phone</th>
-            <th>Email</th>
-            <th>Place</th>
-            <th>Booking Date</th>
-            <th>Payment Mode</th>
-            <th>Quantity</th>
-            <th>Total Amount</th>
-            <th>Status</th>
-            <th>Update Status</th>
-        </tr>
+    <main class="container">
 
-        {% for i in data %}
+        <section class="page-heading">
+            <div>
+                <h2>Takeaway Bookings</h2>
+                <p>View customer orders, booking information, payment details and booking status.</p>
+            </div>
 
-        <tr>
+            <div class="booking-count">
+                🧾 Total Bookings: <span id="bookingCount">0</span>
+            </div>
+        </section>
 
-            <td>{{i.product_id.product_name}}</td>
-            <td>{{i.product_id.price}}</td>
+        <section class="summary-card">
+            <div>
+                <h3>Takeaway Booking Management</h3>
+                <div class="amount">Order Overview</div>
+                <p style="margin-top: 9px; color: #d1fae5; font-size: 12px;">
+                    Track bookings and manage payment status in one place.
+                </p>
+            </div>
+            <div class="summary-icon">📦</div>
+        </section>
 
-            <td>{{i.user_id.name}}</td>
+        <section class="table-card">
 
-            <td>{{i.user_id.phone}}</td>
+            <div class="table-header">
+                <h3>📋 Booking Records</h3>
 
-            <td>{{i.user_id.email_id}}</td>
+                <div class="search-box">
+                    <input
+                        type="search"
+                        id="bookingSearch"
+                        placeholder="Search product, customer, phone..."
+                        aria-label="Search takeaway bookings"
+                    >
+                </div>
+            </div>
 
-            <td>{{i.user_id.place}}</td>
+            <div class="table-wrapper">
+                <table id="bookingTable">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Customer Name</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Place</th>
+                            <th>Booking Date</th>
+                            <th>Payment Mode</th>
+                            <th>Quantity</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                            <th>Update Status</th>
+                        </tr>
+                    </thead>
 
-            <td>{{i.date}}</td>
+                    <tbody id="bookingTableBody">
 
-            <td>{{i.payment_mode}}</td>
+                        {% for i in data %}
+                        <tr class="booking-row">
 
-            <td>{{i.quantity}}</td>
+                            <td>
+                                <div class="product-name">
+                                    {{ i.product_id.product_name }}
+                                </div>
+                            </td>
 
-            <td>Rs. {{i.total_amount}}</td>
+                            <td class="price">
+                                ₹{{ i.product_id.price }}
+                            </td>
 
-            <td>{{i.status}}</td>
+                            <td>
+                                <div class="customer-name">
+                                    {{ i.user_id.name }}
+                                </div>
+                            </td>
 
-            <td>
+                            <td class="contact">{{ i.user_id.phone }}</td>
 
-                {% if i.status != 'paid' %}
+                            <td class="contact">{{ i.user_id.email_id }}</td>
 
-                <a href="/staff_update_booking_status/{{i.booking_id}}">
-                    Update to Paid
-                </a>
+                            <td>{{ i.user_id.place }}</td>
 
-                {% else %}
+                            <td style="white-space: nowrap;">{{ i.date }}</td>
 
-                Paid
+                            <td>
+                                <span class="payment-mode">
+                                    {{ i.payment_mode }}
+                                </span>
+                            </td>
 
-                {% endif %}
+                            <td>
+                                <span class="quantity">{{ i.quantity }}</span>
+                            </td>
 
-            </td>
+                            <td>
+                                <span class="total-amount">
+                                    ₹{{ i.total_amount }}
+                                </span>
+                            </td>
 
-        </tr>
+                            <td>
+                                {% if i.status == 'paid' %}
+                                    <span class="status paid">
+                                        <span class="status-dot"></span>
+                                        {{ i.status }}
+                                    </span>
+                                {% elif i.status == 'pending' %}
+                                    <span class="status pending">
+                                        <span class="status-dot"></span>
+                                        {{ i.status }}
+                                    </span>
+                                {% else %}
+                                    <span class="status other">
+                                        <span class="status-dot"></span>
+                                        {{ i.status }}
+                                    </span>
+                                {% endif %}
+                            </td>
 
-        {% empty %}
+                            <td>
+                                {% if i.status != 'paid' %}
+                                    <a
+                                        href="/staff_update_booking_status/{{ i.booking_id }}"
+                                        class="update-btn"
+                                        onclick="return confirm('Are you sure you want to mark this booking as paid?');"
+                                    >
+                                        ✓ Update to Paid
+                                    </a>
+                                {% else %}
+                                    <span class="paid-label">✓ Paid</span>
+                                {% endif %}
+                            </td>
 
-        <tr>
-            <td colspan="10">No Takeaway Bookings Found</td>
-        </tr>
+                        </tr>
 
-        {% endfor %}
+                        {% empty %}
+                        <tr>
+                            <td colspan="12" class="empty-state">
+                                <span class="empty-icon">📭</span>
+                                <strong>No Takeaway Bookings Found</strong>
+                                <span>There are currently no takeaway bookings to display.</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
 
-    </table>
+                    </tbody>
+                </table>
+
+                <div id="noResults" class="no-results">
+                    No bookings match your search.
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        Takeaway Booking Management · Staff Dashboard
+    </footer>
+
+    <script>
+        const searchInput = document.getElementById("bookingSearch");
+        const rows = Array.from(document.querySelectorAll(".booking-row"));
+        const bookingCount = document.getElementById("bookingCount");
+        const noResults = document.getElementById("noResults");
+
+        bookingCount.textContent = rows.length;
+
+        searchInput.addEventListener("input", function () {
+            const searchValue = this.value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            rows.forEach(function (row) {
+                const rowText = row.textContent.toLowerCase();
+                const matches = rowText.includes(searchValue);
+
+                row.style.display = matches ? "" : "none";
+
+                if (matches) {
+                    visibleCount++;
+                }
+            });
+
+            noResults.style.display =
+                visibleCount === 0 && rows.length > 0 ? "block" : "none";
+        });
+    </script>
 
 </body>
 </html>

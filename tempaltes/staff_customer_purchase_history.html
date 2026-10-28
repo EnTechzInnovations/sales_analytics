@@ -1,76 +1,494 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Purchase History</title>
+
+    <title>Customer Purchase History | Supermarket</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #059669;
+            --primary-dark: #047857;
+            --background: #f4f8f6;
+            --white: #ffffff;
+            --text: #1f2937;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        .page-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 35px 25px 50px;
+        }
+
+        /* Page Header */
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 28px;
+        }
+
+        .page-header h1 {
+            color: #123b31;
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: -0.7px;
+        }
+
+        .page-header p {
+            color: var(--muted);
+            font-size: 14px;
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+
+        .header-badge {
+            background: #d1fae5;
+            color: var(--primary-dark);
+            padding: 11px 17px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* Customer Card */
+
+        .customer-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(15, 118, 110, 0.04);
+        }
+
+        .customer-card-header {
+            background: linear-gradient(120deg, #047857, #10b981);
+            color: white;
+            padding: 22px 25px;
+        }
+
+        .customer-card-header h2 {
+            font-size: 19px;
+            font-weight: 700;
+        }
+
+        .customer-card-header p {
+            font-size: 12px;
+            margin-top: 7px;
+            color: #d1fae5;
+        }
+
+        .customer-details {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 20px;
+            padding: 25px;
+        }
+
+        .detail-item {
+            min-width: 0;
+        }
+
+        .detail-label {
+            display: block;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 9px;
+        }
+
+        .detail-value {
+            display: block;
+            color: #1f2937;
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        /* Purchase History Panel */
+
+        .history-panel {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(15, 118, 110, 0.04);
+        }
+
+        .history-header {
+            padding: 23px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .history-header h2 {
+            color: #123b31;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .history-header p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 7px;
+        }
+
+        .history-label {
+            display: inline-block;
+            background: #ecfdf5;
+            color: #047857;
+            border-radius: 8px;
+            padding: 9px 12px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            min-width: 800px;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f0f7f3;
+        }
+
+        th {
+            padding: 17px 20px;
+            text-align: left;
+            color: #36584c;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 18px 20px;
+            border-bottom: 1px solid #edf0ee;
+            color: #4b5563;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        tbody tr {
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f7fcf9;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .bill-number {
+            color: #047857;
+            font-weight: 800;
+        }
+
+        .product-name {
+            color: #1f2937;
+            font-weight: 700;
+        }
+
+        .amount {
+            color: #047857;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .payment-badge {
+            display: inline-block;
+            padding: 7px 11px;
+            border-radius: 20px;
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .purchase-date {
+            white-space: nowrap;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 55px 20px;
+            color: var(--muted);
+        }
+
+        .empty-icon {
+            font-size: 40px;
+            margin-bottom: 14px;
+        }
+
+        .empty-state h3 {
+            color: #123b31;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .empty-state p {
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+
+        .page-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .footer-note {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .back-home-btn {
+            display: inline-block;
+            padding: 12px 22px;
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            transition: 0.25s ease;
+        }
+
+        .back-home-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(5, 150, 105, 0.18);
+        }
+
+        @media (max-width: 700px) {
+            .page-container {
+                padding: 25px 14px 35px;
+            }
+
+            .page-header h1 {
+                font-size: 25px;
+            }
+
+            .customer-details {
+                grid-template-columns: 1fr;
+                gap: 22px;
+                padding: 22px;
+            }
+
+            .customer-card-header,
+            .history-header {
+                padding: 20px;
+            }
+
+            .page-footer {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .back-home-btn {
+                text-align: center;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
     {% include 'staff_header.html' %}
 
-    <h2>Customer Purchase History</h2>
+    <main class="page-container">
 
-    <table border="1">
+        <!-- Page Header -->
+        <header class="page-header">
+            <div>
+                <h1>Purchase History</h1>
+                <p>View customer information and review their previous purchases.</p>
+            </div>
 
-        <tr>
-            <th>Customer Name</th>
-            <td>{{customer.customer_name}}</td>
-        </tr>
+            <div class="header-badge">
+                🧾 Sales Records
+            </div>
+        </header>
 
-        <tr>
-            <th>Phone</th>
-            <td>{{customer.phone}}</td>
-        </tr>
+        <!-- Customer Information -->
+        <section class="customer-card">
 
-        <tr>
-            <th>Email</th>
-            <td>{{customer.email}}</td>
-        </tr>
+            <div class="customer-card-header">
+                <h2>Customer Information</h2>
+                <p>Basic details of the selected customer</p>
+            </div>
 
-    </table>
+            <div class="customer-details">
 
-    <br><br>
+                <div class="detail-item">
+                    <span class="detail-label">Customer Name</span>
+                    <span class="detail-value">
+                        {{ customer.customer_name }}
+                    </span>
+                </div>
 
-    <h2>Purchase History</h2>
+                <div class="detail-item">
+                    <span class="detail-label">Phone Number</span>
+                    <span class="detail-value">
+                        {{ customer.phone|default:"Not provided" }}
+                    </span>
+                </div>
 
-    <table border="1">
+                <div class="detail-item">
+                    <span class="detail-label">Email Address</span>
+                    <span class="detail-value">
+                        {{ customer.email|default:"Not provided" }}
+                    </span>
+                </div>
 
-        <tr>
-            <th>Bill Number</th>
-            <th>Product</th>
-            <th>Total Amount</th>
-            <th>Payment Mode</th>
-            <th>Purchase Date</th>
-        </tr>
+            </div>
 
-        {% for i in purchase_history %}
+        </section>
 
-        <tr>
+        <!-- Purchase History -->
+        <section class="history-panel">
 
-            <td>{{i.bill_number}}</td>
+            <div class="history-header">
+                <div>
+                    <h2>Purchase History</h2>
+                    <p>Bill numbers, purchased products, payments, and dates.</p>
+                </div>
 
-            <td>{{i.product.product_name}}</td>
+                <span class="history-label">
+                    📋 Transaction Records
+                </span>
+            </div>
 
-            <td>{{i.total_amount}}</td>
+            <div class="table-responsive">
 
-            <td>{{i.payment_mode}}</td>
+                <table>
 
-            <td>{{i.sales_date}}</td>
+                    <thead>
+                        <tr>
+                            <th>Bill Number</th>
+                            <th>Product</th>
+                            <th>Total Amount</th>
+                            <th>Payment Mode</th>
+                            <th>Purchase Date</th>
+                        </tr>
+                    </thead>
 
-        </tr>
+                    <tbody>
 
-        {% empty %}
+                        {% for i in purchase_history %}
 
-        <tr>
-            <td colspan="5">
-                No Purchase History Found
-            </td>
-        </tr>
+                        <tr>
+                            <td>
+                                <span class="bill-number">
+                                    #{{ i.bill_number }}
+                                </span>
+                            </td>
 
-        {% endfor %}
+                            <td>
+                                <span class="product-name">
+                                    {{ i.product.product_name }}
+                                </span>
+                            </td>
 
-    </table>
+                            <td>
+                                <span class="amount">
+                                    ₹{{ i.total_amount }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="payment-badge">
+                                    {{ i.payment_mode }}
+                                </span>
+                            </td>
+
+                            <td class="purchase-date">
+                                {{ i.sales_date }}
+                            </td>
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+                            <td colspan="5">
+                                <div class="empty-state">
+                                    <div class="empty-icon">🧾</div>
+                                    <h3>No Purchase History Found</h3>
+                                    <p>
+                                        No purchase records are available
+                                        for this customer yet.
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+        <!-- Footer Actions -->
+        <footer class="page-footer">
+            <p class="footer-note">
+                Purchase records are displayed from the supermarket database.
+            </p>
+
+            <a href="/staff_home" class="back-home-btn">
+                ← Back to Home
+            </a>
+        </footer>
+
+    </main>
 
 </body>
 </html>
