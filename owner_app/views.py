@@ -183,7 +183,7 @@ def owner_delete_product(request,id):
 def owner_update_product(request,id):
     stt=product_category.objects.all()
     br=branch.objects.filter(owner_id=request.session['owner_id'])
-    pd_data=product.objects.get(owner_id=id)
+    pd_data=product.objects.get(product_id=id)
 
     print(pd_data,"?/////////////////////////")
 

@@ -1,64 +1,381 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>View Customers | Sales Analytics</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0b1020, #15122e, #101b35);
+            color: #f1f5f9;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 30px;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #a5b4fc;
+            font-size: 14px;
+        }
+
+        .home-btn {
+            text-decoration: none;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.35);
+        }
+
+        .stats-card {
+            background: rgba(30, 41, 59, 0.75);
+            border: 1px solid rgba(129, 140, 248, 0.2);
+            border-radius: 16px;
+            padding: 22px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .stats-card h3 {
+            color: #a5b4fc;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .stats-card h2 {
+            color: #ffffff;
+            font-size: 32px;
+        }
+
+        .stats-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(34, 211, 238, 0.12);
+            color: #22d3ee;
+            font-size: 27px;
+        }
+
+        .table-card {
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid rgba(129, 140, 248, 0.2);
+            border-radius: 18px;
+            padding: 25px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        .table-header h2 {
+            font-size: 21px;
+            color: #ffffff;
+        }
+
+        .search-box {
+            width: 300px;
+            max-width: 100%;
+            padding: 12px 15px;
+            background: #1e293b;
+            border: 1px solid #374151;
+            border-radius: 10px;
+            color: #ffffff;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .search-box:focus {
+            border-color: #22d3ee;
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
+        }
+
+        .search-box::placeholder {
+            color: #94a3b8;
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 950px;
+        }
+
+        thead {
+            background: linear-gradient(90deg, #312e81, #4338ca);
+        }
+
+        th {
+            padding: 16px 14px;
+            text-align: left;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: #e0e7ff;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 16px 14px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+            color: #cbd5e1;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+
+        tbody tr {
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .serial {
+            color: #22d3ee;
+            font-weight: 700;
+        }
+
+        .customer-name {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .email {
+            color: #a5b4fc;
+        }
+
+        .phone {
+            color: #67e8f9;
+            white-space: nowrap;
+        }
+
+        .gender-badge {
+            display: inline-block;
+            padding: 6px 11px;
+            border-radius: 20px;
+            background: rgba(124, 58, 237, 0.15);
+            color: #c4b5fd;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .branch-badge {
+            display: inline-block;
+            padding: 6px 11px;
+            border-radius: 8px;
+            background: rgba(34, 211, 238, 0.1);
+            color: #67e8f9;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            display: none;
+            text-align: center;
+            padding: 35px 15px;
+            color: #94a3b8;
+        }
+
+        .footer-note {
+            text-align: center;
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 22px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .table-card {
+                padding: 15px;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .stats-card h2 {
+                font-size: 27px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
+<div class="container">
 
-    {% include 'owner_header.html' %}
-    <table border="1">
+    <div class="header">
+        <div>
+            <h1>Customer Management</h1>
+            <p>View and search registered customers across your branches.</p>
+        </div>
 
-        <tr>
-            <th>
-                SL.NO
-            </th>
-            <th>
-                Customer Name
-            </th>
-            <th>
-                Customer Email
-            </th>
+        <a href="/owner_home" class="home-btn">← Back to Home</a>
+    </div>
 
-            <th>
-                Customer Phone
-            </th>
+    <div class="stats-card">
+        <div>
+            <h3>Total Customers</h3>
+            <h2 id="customerCount">{{ data|length }}</h2>
+        </div>
 
-            <th>
-                Customer Address
-            </th>
+        <div class="stats-icon">👥</div>
+    </div>
 
-            <th>
-                Gender
-            </th>
+    <div class="table-card">
 
-            <th>
-                Branch Name
-            </th>
-        </tr>
-        {% for i in data %}
+        <div class="table-header">
+            <h2>Customer Directory</h2>
 
-        <tr>
-            <td>{{forloop.counter}}</td>
-            <td>{{i.customer_name}}</td>
-            <td>{{i.email}}</td>
-            <td>{{i.phone}}</td>
-            <td>{{i.address}}</td>
-            <td>{{i.gender}}</td>
-            <td>{{i.branch.branch_name}}</td>
-        </tr>
+            <input
+                type="text"
+                id="customerSearch"
+                class="search-box"
+                placeholder="Search name, email, phone, branch..."
+                onkeyup="searchCustomers()"
+                aria-label="Search customers">
+        </div>
 
-        {%endfor%}
-    </table>
+        <div class="table-wrapper">
+            <table id="customerTable">
+                <thead>
+                    <tr>
+                        <th>Sl. No.</th>
+                        <th>Customer Name</th>
+                        <th>Email Address</th>
+                        <th>Phone Number</th>
+                        <th>Address</th>
+                        <th>Gender</th>
+                        <th>Branch Name</th>
+                    </tr>
+                </thead>
 
+                <tbody>
+                    {% for i in data %}
+                    <tr class="customer-row">
+                        <td class="serial">{{ forloop.counter }}</td>
+                        <td class="customer-name">{{ i.customer_name }}</td>
+                        <td class="email">{{ i.email }}</td>
+                        <td class="phone">{{ i.phone }}</td>
+                        <td>{{ i.address }}</td>
+                        <td>
+                            <span class="gender-badge">{{ i.gender }}</span>
+                        </td>
+                        <td>
+                            <span class="branch-badge">{{ i.branch.branch_name }}</span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" style="text-align:center; padding:35px; color:#94a3b8;">
+                            No customers found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
+        <div id="emptyState" class="empty-state">
+            No matching customers found. Try another search.
+        </div>
 
-    {% include 'footer.html' %}
+    </div>
+
+    <div class="footer-note">
+        Sales Analytics &bull; Customer Management
+    </div>
+
+</div>
+
+<script>
+    function searchCustomers() {
+        const input = document.getElementById("customerSearch");
+        const filter = input.value.toLowerCase().trim();
+        const rows = document.querySelectorAll("#customerTable tbody tr.customer-row");
+        const emptyState = document.getElementById("emptyState");
+
+        let visibleCount = 0;
+
+        rows.forEach(function(row) {
+            const rowText = row.innerText.toLowerCase();
+            const matches = rowText.includes(filter);
+
+            row.style.display = matches ? "" : "none";
+
+            if (matches) {
+                visibleCount++;
+            }
+        });
+
+        emptyState.style.display =
+            (rows.length > 0 && visibleCount === 0) ? "block" : "none";
+    }
+</script>
 
 </body>
-
 </html>

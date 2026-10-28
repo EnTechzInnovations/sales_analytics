@@ -1,69 +1,626 @@
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+
+    <title>Update Owner Profile | Sales Analytics</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0b1020;
+            --surface: #151e33;
+            --surface2: #1b2942;
+            --primary: #8b5cf6;
+            --primary-light: #a78bfa;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --border: rgba(148, 163, 184, 0.16);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background:
+                radial-gradient(ellipse at top right,
+                    rgba(139, 92, 246, 0.09), transparent 40%),
+                var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .page-container {
+            max-width: 1050px;
+            margin: auto;
+            padding: 35px 24px 50px;
+        }
+
+        .breadcrumb {
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .breadcrumb a {
+            color: var(--primary-light);
+        }
+
+        .page-header {
+            margin-bottom: 28px;
+        }
+
+        .page-header h1 {
+            font-size: clamp(25px, 4vw, 34px);
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .page-header p {
+            margin-top: 10px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        .form-card {
+            overflow: hidden;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .form-banner {
+            padding: 24px 30px;
+            background: linear-gradient(
+                110deg,
+                #31216b,
+                #25234f 55%,
+                #12334a
+            );
+            border-bottom: 1px solid var(--border);
+        }
+
+        .form-banner h2 {
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .form-banner p {
+            margin-top: 7px;
+            color: #cbd5e1;
+            font-size: 12px;
+            line-height: 1.7;
+        }
+
+        .form-body {
+            padding: 30px;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 22px;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .section-heading::before {
+            content: "";
+            width: 4px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 5px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+        }
+
+        .form-group {
+            min-width: 0;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 9px;
+            color: #cbd5e1;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            display: block;
+            width: 100%;
+            padding: 13px 14px;
+
+            color: var(--text);
+            background: #0d1528;
+
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            outline: none;
+
+            font-family: inherit;
+            font-size: 12px;
+
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input {
+            min-height: 45px;
+        }
+
+        .form-group textarea {
+            min-height: 115px;
+            resize: vertical;
+            line-height: 1.7;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+        }
+
+        .form-group input[type="file"] {
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .form-group input[type="file"]::file-selector-button {
+            padding: 8px 12px;
+            margin-right: 12px;
+            color: white;
+            background: #31216b;
+            border: 0;
+            border-radius: 7px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 11px;
+        }
+
+        .file-note {
+            display: block;
+            margin-top: 8px;
+            color: var(--muted);
+            font-size: 10px;
+            line-height: 1.6;
+        }
+
+        .image-preview {
+            display: block;
+            width: 105px;
+            height: 105px;
+            margin-top: 13px;
+
+            object-fit: cover;
+            background: #0b1020;
+
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .license-preview {
+            object-fit: contain;
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 30px 0;
+        }
+
+        .form-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            min-height: 44px;
+            padding: 12px 21px;
+
+            border: 1px solid transparent;
+            border-radius: 10px;
+
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            color: white;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.18);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(139, 92, 246, 0.28);
+        }
+
+        .btn-secondary {
+            color: #cbd5e1;
+            background: var(--surface2);
+            border-color: var(--border);
+        }
+
+        .btn-secondary:hover {
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .page-footer {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: #64748b;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        @media (max-width: 650px) {
+            .page-container {
+                padding: 24px 14px 35px;
+            }
+
+            .form-banner,
+            .form-body {
+                padding: 22px 18px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 19px;
+            }
+
+            .form-group.full-width {
+                grid-column: auto;
+            }
+
+            .form-actions {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-    <form action="" method="post" enctype="multipart/form-data">
-        <table>
-            <tr>
-                <th>Shop Name</th>
-                <td><input type="text" name="shop_name" value="{{data.shop_name}}"></td>
-            </tr>
+  
+    <main class="page-container">
 
-            <tr>
-                <th>Owner Name</th>
-                <td><input type="text" name="owner_name" value="{{data.owner_name}}"></td>
-            </tr>
+        <div class="breadcrumb">
+            <a href="/owner_home">Dashboard</a>
+            &nbsp; / &nbsp;
+            <a href="/owner_view_profile">My Profile</a>
+            &nbsp; / &nbsp;
+            Update Profile
+        </div>
 
-            <tr>
-                <th>Photo</th>
-                <td><input type="file" name="photo"><img src="/static/own_reg_img/{{data.photo}}" width="100px" height="100px"></td>
-            </tr>
+        <header class="page-header">
 
-            <tr>
-                <th>Phone</th>
-                <td><input type="text" name="phone" value="{{data.phone}}"></td>
-            </tr>
+            <h1>Update Profile</h1>
 
-            <tr>
-                <th>Email</th>
-                <td><input type="text" name="email" value="{{data.email}}"></td>
-            </tr>
+            <p>
+                Keep your owner account and business information up to date.
+            </p>
 
-            <tr>
-                <th>Address</th>
-                <td><textarea name="address" id="" cols="30" rows="10">{{data.address}}</textarea></td>
-            </tr>
+        </header>
 
-            <tr>
-                <th>District</th>
-                <td><input type="text" name="district" value="{{data.district}}"></td>
-            </tr>
 
-            <tr>
-                <th>State</th>
-                <td><input type="text" name="state" value="{{data.state}}"></td>
-            </tr>
+        <section class="form-card">
 
-            <tr>
-                <th>Pincode</th>
-                <td><input type="text" name="pincode" value="{{data.pincode}}"></td>
-            </tr>
+            <div class="form-banner">
 
-            <tr>
-                <th>License</th>
-                <td><input type="file" name="license"><img src="/static/own_reg_img/{{data.License}}" width="100px" height="100px"></td>
-            </tr>
+                <h2>Edit Your Information</h2>
 
-            <tr>
-                <td><input type="submit" value="Update Profile"></td>
-            </tr>
+                <p>
+                    Update your shop details, contact information,
+                    address, and business license.
+                </p>
 
-        </table>
-    
+            </div>
+
+
+            <form action="" method="post" enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+                <div class="form-body">
+
+                    <h3 class="section-heading">
+                        Personal & Shop Information
+                    </h3>
+
+                    <div class="form-grid">
+
+
+                        <div class="form-group">
+
+                            <label for="shop_name">Shop Name</label>
+
+                            <input
+                                type="text"
+                                id="shop_name"
+                                name="shop_name"
+                                value="{{data.shop_name}}"
+                                required>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="owner_name">Owner Name</label>
+
+                            <input
+                                type="text"
+                                id="owner_name"
+                                name="owner_name"
+                                value="{{data.owner_name}}"
+                                required>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="phone">Phone Number</label>
+
+                            <input
+                                type="tel"
+                                id="phone"
+                                name="phone"
+                                value="{{data.phone}}"
+                                required>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="email">Email Address</label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                value="{{data.email}}"
+                                required>
+
+                        </div>
+
+
+                        <div class="form-group full-width">
+
+                            <label for="address">Address</label>
+
+                            <textarea
+                                id="address"
+                                name="address"
+                                required>{{data.address}}</textarea>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="district">District</label>
+
+                            <input
+                                type="text"
+                                id="district"
+                                name="district"
+                                value="{{data.district}}"
+                                required>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="state">State</label>
+
+                            <input
+                                type="text"
+                                id="state"
+                                name="state"
+                                value="{{data.state}}"
+                                required>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="pincode">Pincode</label>
+
+                            <input
+                                type="text"
+                                id="pincode"
+                                name="pincode"
+                                value="{{data.pincode}}"
+                                inputmode="numeric"
+                                required>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="divider"></div>
+
+
+                    <h3 class="section-heading">
+                        Profile Photo & Business License
+                    </h3>
+
+
+                    <div class="form-grid">
+
+
+                        <div class="form-group">
+
+                            <label for="photo">Owner Photo</label>
+
+                            <input
+                                type="file"
+                                id="photo"
+                                name="photo"
+                                accept="image/*">
+
+                            <span class="file-note">
+                                Choose a new photo only if you want
+                                to replace your existing photo.
+                            </span>
+
+                            <img
+                                src="/static/own_reg_img/{{data.photo}}"
+                                class="image-preview"
+                                id="photoPreview"
+                                alt="Current owner photo">
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="license">Business License</label>
+
+                            <input
+                                type="file"
+                                id="license"
+                                name="license"
+                                accept="image/*">
+
+                            <span class="file-note">
+                                Choose a new license image only if
+                                you want to replace the existing one.
+                            </span>
+
+                            <img
+                                src="/static/own_reg_img/{{data.License}}"
+                                class="image-preview license-preview"
+                                id="licensePreview"
+                                alt="Current business license">
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="form-actions">
+
+                        <a
+                            href="/owner_view_profile"
+                            class="btn btn-secondary">
+
+                            Cancel
+
+                        </a>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary">
+
+                            <span>✓</span>
+                            Update Profile
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        <footer class="page-footer">
+            Sales Analytics &nbsp;·&nbsp; Owner Workspace
+        </footer>
+
+    </main>
+
+   
+
+
+    <script>
+
+        function previewImage(inputId, previewId) {
+
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
+
+            input.addEventListener("change", function () {
+
+                const file = this.files[0];
+
+                if (file && file.type.startsWith("image/")) {
+
+                    const reader = new FileReader();
+
+                    reader.onload = function (event) {
+                        preview.src = event.target.result;
+                    };
+
+                    reader.readAsDataURL(file);
+
+                }
+
+            });
+
+        }
+
+        previewImage("photo", "photoPreview");
+        previewImage("license", "licensePreview");
+
+    </script>
+
 </body>
 </html>

@@ -3,24 +3,262 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Send Feedback | Sales Analytics</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: linear-gradient(135deg, #0b1020, #15122e, #101b35);
+            color: #f1f5f9;
+            padding: 30px;
+        }
+
+        .header {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .header h1 {
+            font-size: 30px;
+            color: #ffffff;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #a5b4fc;
+            font-size: 14px;
+        }
+
+        .home-btn {
+            text-decoration: none;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
+        }
+
+        .main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .feedback-card {
+            width: 100%;
+            max-width: 650px;
+            background: rgba(15, 23, 42, 0.92);
+            border: 1px solid rgba(129, 140, 248, 0.25);
+            border-radius: 20px;
+            padding: 35px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .icon {
+            width: 65px;
+            height: 65px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(34, 211, 238, 0.12);
+            border-radius: 17px;
+            font-size: 30px;
+            margin-bottom: 22px;
+        }
+
+        .feedback-card h2 {
+            font-size: 25px;
+            margin-bottom: 10px;
+            color: #ffffff;
+        }
+
+        .description {
+            font-size: 14px;
+            color: #94a3b8;
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+
+        label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin-bottom: 12px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 180px;
+            resize: vertical;
+            padding: 16px;
+            border: 1px solid #374151;
+            border-radius: 12px;
+            background: #1e293b;
+            color: #ffffff;
+            font-size: 14px;
+            line-height: 1.7;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        textarea::placeholder {
+            color: #64748b;
+        }
+
+        textarea:focus {
+            border-color: #22d3ee;
+            box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.1);
+        }
+
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            gap: 10px;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .counter {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            margin-top: 25px;
+            border: none;
+            border-radius: 11px;
+            background: linear-gradient(135deg, #7c3aed, #4f46e5);
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
+        }
+
+        .footer-note {
+            text-align: center;
+            color: #64748b;
+            font-size: 12px;
+            padding-top: 25px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 18px;
+            }
+
+            .header h1 {
+                font-size: 25px;
+            }
+
+            .feedback-card {
+                padding: 23px;
+            }
+
+            .feedback-card h2 {
+                font-size: 22px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-    {% include 'owner_header.html' %}
+    <header class="header">
+        <div>
+            <h1>Feedback Center</h1>
+            <p>Share your experience and help us improve our services.</p>
+        </div>
 
-    <form action="" method="post">
-        <table>
-            <tr>
-                <th>Feedback</th>
-                <td><textarea name="feedback" id="" cols="30" rows="10"></textarea></td>
-            </tr>
-            <tr>
-                <td><input type="submit" value="Send Feedback"></td>
-            </tr>
-        </table>
-    </form>
-    {% include 'footer.html' %}
-    
+        <a href="/owner_home" class="home-btn">← Back to Home</a>
+    </header>
+
+    <main class="main">
+        <section class="feedback-card">
+
+            <div class="icon">💬</div>
+
+            <h2>We Value Your Feedback</h2>
+
+            <p class="description">
+                Your suggestions and opinions help us make our Sales Analytics
+                system better. Tell us what you think.
+            </p>
+
+            <form action="" method="post">
+                {% csrf_token %}
+
+                <label for="feedback">Your Feedback</label>
+
+                <textarea
+                    name="feedback"
+                    id="feedback"
+                    placeholder="Write your feedback or suggestions here..."
+                    required
+                    minlength="5"
+                    maxlength="1000"></textarea>
+
+                <div class="form-footer">
+                    <span class="hint">Please share your thoughts.</span>
+                    <span class="counter"><span id="charCount">0</span>/1000</span>
+                </div>
+
+                <button type="submit" class="submit-btn">
+                    Submit Feedback →
+                </button>
+            </form>
+
+        </section>
+    </main>
+
+    <footer class="footer-note">
+        Sales Analytics &bull; Feedback Management
+    </footer>
+
+    <script>
+        const feedback = document.getElementById("feedback");
+        const charCount = document.getElementById("charCount");
+
+        feedback.addEventListener("input", function () {
+            charCount.textContent = feedback.value.length;
+        });
+    </script>
+
 </body>
 </html>

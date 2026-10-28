@@ -104,6 +104,7 @@ def  admin_accept_owner(request,id):
     x.user_type='owner'
     x.save()
     return HttpResponse("<script>alert('Accept Successfully');window.location='/admin_home';</script>")
+
     
 
 

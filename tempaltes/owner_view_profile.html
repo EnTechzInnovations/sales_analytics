@@ -1,82 +1,540 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+
+    <title>Owner Profile | Sales Analytics</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0b1020;
+            --sidebar: #10172a;
+            --surface: #151e33;
+            --surface2: #1b2942;
+            --primary: #8b5cf6;
+            --primary-light: #a78bfa;
+            --cyan: #22d3ee;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --border: rgba(148, 163, 184, 0.16);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background:
+                radial-gradient(ellipse at top right,
+                    rgba(139, 92, 246, 0.09), transparent 40%),
+                var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .page-container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 35px 25px 50px;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .breadcrumb {
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 12px;
+        }
+
+        .breadcrumb a {
+            color: var(--primary-light);
+        }
+
+        .page-header h1 {
+            font-size: clamp(25px, 4vw, 34px);
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+
+        .page-header p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.8;
+            margin-top: 9px;
+        }
+
+        .header-badge {
+            padding: 10px 15px;
+            border: 1px solid rgba(139, 92, 246, 0.25);
+            border-radius: 30px;
+            background: rgba(139, 92, 246, 0.10);
+            color: var(--primary-light);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .profile-card {
+            overflow: hidden;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.16);
+        }
+
+        .profile-banner {
+            height: 155px;
+            position: relative;
+            background: linear-gradient(
+                120deg,
+                #31216b,
+                #25234f 50%,
+                #12334a
+            );
+        }
+
+        .profile-banner::before {
+            content: "";
+            position: absolute;
+            right: 8%;
+            top: -80px;
+            width: 230px;
+            height: 230px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .profile-banner::after {
+            content: "";
+            position: absolute;
+            right: 24%;
+            bottom: -90px;
+            width: 170px;
+            height: 170px;
+            border-radius: 50%;
+            background: rgba(34, 211, 238, 0.08);
+        }
+
+        .profile-main {
+            padding: 0 30px 30px;
+        }
+
+        .profile-top {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: -65px;
+            position: relative;
+        }
+
+        .owner-info {
+            display: flex;
+            align-items: flex-end;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .owner-photo {
+            width: 130px;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 20px;
+            background: var(--surface2);
+            border: 5px solid var(--surface);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+        }
+
+        .owner-heading {
+            padding-bottom: 10px;
+        }
+
+        .owner-heading h2 {
+            font-size: 23px;
+            font-weight: 800;
+            overflow-wrap: anywhere;
+        }
+
+        .owner-heading p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 7px;
+        }
+
+        .update-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            padding: 13px 19px;
+            margin-bottom: 10px;
+            color: white;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            border-radius: 11px;
+            font-size: 12px;
+            font-weight: 700;
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .update-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 25px rgba(139, 92, 246, 0.3);
+        }
+
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 28px 0;
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .section-heading::before {
+            content: "";
+            width: 4px;
+            height: 21px;
+            border-radius: 5px;
+            background: var(--primary);
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .detail-item {
+            min-width: 0;
+            padding: 18px;
+            background: rgba(255, 255, 255, 0.018);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .detail-item:hover {
+            background: var(--surface2);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .detail-label {
+            display: block;
+            margin-bottom: 9px;
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+
+        .detail-value {
+            color: var(--text);
+            font-size: 13px;
+            font-weight: 600;
+            line-height: 1.8;
+            overflow-wrap: anywhere;
+            white-space: pre-wrap;
+        }
+
+        .license-section {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .document-card {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.018);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+        }
+
+        .document-card h3 {
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .document-image {
+            display: block;
+            width: 100%;
+            height: 220px;
+            object-fit: contain;
+            background: #0b1020;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+        }
+
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--muted);
+            line-height: 1.8;
+        }
+
+        .page-footer {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            color: #64748b;
+            font-size: 11px;
+            text-align: center;
+        }
+
+        @media (max-width: 650px) {
+            .page-container {
+                padding: 24px 14px 35px;
+            }
+
+            .profile-main {
+                padding: 0 18px 22px;
+            }
+
+            .profile-top {
+                align-items: flex-start;
+            }
+
+            .owner-info {
+                align-items: flex-start;
+                gap: 13px;
+            }
+
+            .owner-photo {
+                width: 95px;
+                height: 95px;
+                border-radius: 15px;
+            }
+
+            .owner-heading h2 {
+                font-size: 19px;
+            }
+
+            .update-button {
+                width: 100%;
+                margin-top: 5px;
+            }
+
+            .details-grid,
+            .license-section {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-item {
+                padding: 15px;
+            }
+
+            .profile-banner {
+                height: 120px;
+            }
+
+            .profile-top {
+                margin-top: -45px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-        {% include 'owner_header.html' %}
 
-    <table border="1">
-        <tr>
+    <main class="page-container">
 
-            
+        <header class="page-header">
 
-            <TH>
-                Shop name
-            </TH>
+            <div>
+                <div class="breadcrumb">
+                    <a href="/owner_home">Dashboard</a>
+                    &nbsp; / &nbsp; Owner Profile
+                </div>
 
-            <th>
-                Owner Name
-            </th>
-            <th>
-                Photo
-            </th>
-            <th>
-                Phone
-            </th>
+                <h1>My Profile</h1>
 
-            <th>
-                Email
-            </th>
+                <p>
+                    View your shop details, contact information,
+                    and business documents.
+                </p>
+            </div>
 
-            <th>
-                Address
-            </th>
+            <span class="header-badge">OWNER ACCOUNT</span>
 
-            <th>
-                District
-            </th>
-            <th>
-                State
-            </th>
+        </header>
 
-            <th>
-                Pincode
-            </th>
 
-            <th>
-                License
-            </th>
-        </tr>
+        {% if data %}
 
-        {%if data%}
+        <section class="profile-card">
 
-        <tr>
-            <td>{{data.shop_name}}</td>
-            <td>{{data.owner_name}}</td>
-            <td><img src="/static/own_reg_img/{{data.photo}}" width="100" height="100" alt="image"></td>
-            <td>{{data.phone}}</td>
-            <td>{{data.email}}</td>
-            <td>{{data.address}}</td>
-            <td>{{data.district}}</td>
-            <td>{{data.state}}</td>
-            <td>{{data.pincode}}</td>
-            <td><img src="/static/own_reg_img/{{data.License}}" width="100" height="100" alt="license"></td>
-            <td><a href="/owner_update_profile/{{data.owner_id}}">Update Profile</a></td>
-        </tr>
+            <div class="profile-banner"></div>
+
+            <div class="profile-main">
+
+                <div class="profile-top">
+
+                    <div class="owner-info">
+
+                        <img
+                            src="/static/own_reg_img/{{data.photo}}"
+                            class="owner-photo"
+                            alt="Owner profile photo">
+
+                        <div class="owner-heading">
+
+                            <h2>{{data.owner_name}}</h2>
+
+                            <p>{{data.shop_name}}</p>
+
+                        </div>
+
+                    </div>
+
+                    <a
+                        href="/owner_update_profile/{{data.owner_id}}"
+                        class="update-button">
+
+                        <span>✎</span>
+                        Update Profile
+
+                    </a>
+
+                </div>
+
+
+                <div class="divider"></div>
+
+
+                <h3 class="section-heading">
+                    Personal & Shop Information
+                </h3>
+
+                <div class="details-grid">
+
+                    <div class="detail-item">
+                        <span class="detail-label">Shop Name</span>
+                        <div class="detail-value">{{data.shop_name}}</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Owner Name</span>
+                        <div class="detail-value">{{data.owner_name}}</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Phone Number</span>
+                        <div class="detail-value">{{data.phone}}</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Email Address</span>
+                        <div class="detail-value">{{data.email}}</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Address</span>
+                        <div class="detail-value">{{data.address}}</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">District</span>
+                        <div class="detail-value">{{data.district}}</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">State</span>
+                        <div class="detail-value">{{data.state}}</div>
+                    </div>
+
+                    <div class="detail-item">
+                        <span class="detail-label">Pincode</span>
+                        <div class="detail-value">{{data.pincode}}</div>
+                    </div>
+
+                </div>
+
+
+                <div class="divider"></div>
+
+
+                <h3 class="section-heading">
+                    Business Documents
+                </h3>
+
+                <div class="license-section">
+
+                    <div class="document-card">
+
+                        <h3>Owner Photo</h3>
+
+                        <img
+                            src="/static/own_reg_img/{{data.photo}}"
+                            class="document-image"
+                            alt="Owner photo">
+
+                    </div>
+
+                    <div class="document-card">
+
+                        <h3>Business License</h3>
+
+                        <img
+                            src="/static/own_reg_img/{{data.License}}"
+                            class="document-image"
+                            alt="Business license">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        {% else %}
+
+        <section class="profile-card">
+            <div class="empty-state">
+                <h2>Profile Not Found</h2>
+                <p>Your owner profile information is not available.</p>
+            </div>
+        </section>
 
         {% endif %}
 
-        
-    </table>
 
+        <footer class="page-footer">
+            Sales Analytics &nbsp;·&nbsp; Owner Workspace
+        </footer>
 
-     {% include 'footer.html' %}
+    </main>
+
+    
+
 </body>
-
 </html>
